@@ -1,0 +1,28 @@
+{
+  "name": "nodesecuritytesting",
+  "version": "1.0.0",
+  "description": "project made for security testing purposes.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts"
+  },
+  "keywords": [
+    "security",
+    "node.js",
+    "express",
+    "web",
+    "buffer overflow",
+    "SQL Injection",
+    "SQLi",
+    "CSRF"
+  ],
+  "author": "alecyalcin",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.2"
+  }
+}
