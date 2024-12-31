@@ -14,6 +14,7 @@ import User from "../database/models/users";
 import Book from "../database/models/books";
 import Payment from "../database/models/payments";
 import BookPayment from "../database/models/books_of_payment";
+import dayjs from "dayjs";
 
 const router = express.Router();
 
@@ -56,25 +57,21 @@ router.post("/create", async (req, res) => {
     res.status(400).send({
       message: "Não há quantidade de livros disponível.",
     });
+    return;
   }
 
-  const final_price = book.price * quantity;
-  const date = new Date();
-
+  const total_price = book.price * quantity;
   try {
     const payment = await Payment.create({
       user_id: user_id,
-      final_price: final_price,
-      date: date,
+      total_price: total_price,
     });
 
-    res.sendStatus(201).send({ message: "O pagamento foi criado! " });
+    res.sendStatus(201).send();
   } catch (error) {
     console.log(error);
     res.sendStatus(400).send({ message: "Aconteceu um erro. " });
   }
-
-  res.status(200).send({ message: "Pagamento criado com sucesso! " });
 });
 
 // Listagem de Pagamentos
@@ -104,5 +101,25 @@ router.get("/list", async (req, res) => {
 });
 
 // Alteração de Pagamentos
+
+// Destuir pagamentos
+router.delete("/:id", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const payment = await Payment.destroy({
+      where: {
+        id: id,
+      },
+    });
+
+    res.status(200).send({ message: "Pagamento excluído com sucesso!" });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(400)
+      .send({ message: "Aconteceu um erro ao excluir o pagamento." });
+  }
+});
 
 export default router;

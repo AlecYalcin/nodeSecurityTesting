@@ -23,12 +23,12 @@ BookPayment.init(
 
 BookPayment.belongsTo(Book, {
   foreignKey: "book_id",
-  as: "id",
+  as: "book",
 });
 
 BookPayment.belongsTo(Payment, {
-  foreignKey: "payment_id",
-  as: "id",
+  foreignKey: "user_id",
+  as: "user",
 });
 
 export default BookPayment;

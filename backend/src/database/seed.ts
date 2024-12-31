@@ -25,21 +25,21 @@ export const bookSeed = async () => {
       author: "The Tester",
       description: "A testing book about testing things",
       price: 9.75,
-      quantity: 200,
+      stock: 200,
     },
     {
       title: "The Art of Test II",
       author: "The Tester",
       description: "A testing book about testing things, second volume.",
       price: 15.99,
-      quantity: 15,
+      stock: 15,
     },
     {
       title: "The Art of Test III",
       author: "The Tester & Beta Tester",
       description: "A testing book about testing things, third volume",
       price: 56.78,
-      quantity: 80,
+      stock: 80,
     },
   ];
 

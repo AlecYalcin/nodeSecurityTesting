@@ -17,15 +17,15 @@ Payment.init(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-    data: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
   },
   { sequelize, tableName: "payments" }
 );
 
-Payment.belongsTo(User);
+Payment.belongsTo(User, {
+  foreignKey: "user_id",
+  as: "user",
+});
+
 // Payment.hasMany(BookPayment);
 
 export default Payment;
