@@ -1,27 +1,11 @@
-import { createServer } from "http";
-import mysql from "mysql2";
-import dotenv from "dotenv";
+// Packages
+import express from "express";
 
-dotenv.config();
+// Modules
+import { sequelize, testConnection } from "./config/database";
 
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
+const app = express();
 
-connection.connect((err) => {
-  console.log(err);
-});
+app.get("/", (req, res) => {});
 
-const port = 3000;
-
-const server = createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/plain" });
-  res.end("Olá, Node.js com TypeScript!");
-});
-
-server.listen(port, () => {
-  console.log(`Servidor rodando em http://localhost:${port}`);
-});
+app.listen(3000);
