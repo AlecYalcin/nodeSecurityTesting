@@ -1,6 +1,14 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
 
+export interface UserAttribute {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  isAdmin: boolean;
+}
+
 class User extends Model {}
 
 User.init(
@@ -22,6 +30,7 @@ User.init(
     },
     password: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     isAdmin: {
       type: DataTypes.BOOLEAN,

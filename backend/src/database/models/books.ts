@@ -1,5 +1,16 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
+import BookPayment from "./books_of_payment";
+
+export interface BookAttribute {
+  id: number;
+  title: string;
+  author: string;
+  description: string | null;
+  price: number;
+  stock: number;
+  img: string | null;
+}
 
 class Book extends Model {}
 
@@ -21,12 +32,20 @@ Book.init(
     description: {
       type: DataTypes.STRING,
     },
+    price: {
+      type: DataTypes.FLOAT,
+    },
+    stock: {
+      type: DataTypes.INTEGER,
+    },
     img: {
-      type: DataTypes.BLOB,
+      type: DataTypes.STRING,
       allowNull: true,
     },
   },
   { sequelize, tableName: "books" }
 );
+
+// Book.hasMany(BookPayment);
 
 export default Book;
