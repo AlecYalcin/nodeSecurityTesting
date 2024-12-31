@@ -7,7 +7,7 @@ const router = express.Router();
 // CREATE
 router.post("/", async (req, res) => {
   const user = await User.create(req.body);
-  res.status(201).send({ message: "User Created" });
+  res.status(201).send({ message: "O usuário foi criado!" });
 });
 
 // READ

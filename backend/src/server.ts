@@ -4,6 +4,7 @@ import express from "express";
 // Modules
 import { syncDatabase } from "./database/config/database";
 import userRoutes from "./routes/users";
+import bookRoutes from "./routes/books";
 
 // Servidor Database
 syncDatabase()
@@ -22,6 +23,7 @@ app.use(express.json());
 
 // Rotas de Usuários
 app.use("/users", userRoutes);
+app.use("/books", bookRoutes);
 
 // app.get("/", (req, res) => {});
 
