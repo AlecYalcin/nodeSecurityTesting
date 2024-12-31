@@ -46,6 +46,4 @@ Book.init(
   { sequelize, tableName: "books" }
 );
 
-// Book.hasMany(BookPayment);
-
 export default Book;

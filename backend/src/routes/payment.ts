@@ -62,10 +62,22 @@ router.post("/create", async (req, res) => {
 
   const total_price = book.price * quantity;
   try {
+    // Realizando o Pagamento
     const payment = await Payment.create({
       user_id: user_id,
+      book_id: book_id,
       total_price: total_price,
+      quantity: quantity,
     });
+
+    // Retirando do Estoque
+    if (payment) {
+      await sequelize.query(
+        `UPDATE books SET stock = ${
+          book.stock - quantity
+        } WHERE id = ${book_id}`
+      );
+    }
 
     res.sendStatus(201).send();
   } catch (error) {

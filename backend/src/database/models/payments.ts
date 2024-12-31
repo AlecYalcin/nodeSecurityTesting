@@ -1,6 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
-import BookPayment from "./books_of_payment";
+import Book from "./books";
 import User from "./users";
 
 class Payment extends Model {}
@@ -17,6 +17,11 @@ Payment.init(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+    },
   },
   { sequelize, tableName: "payments" }
 );
@@ -26,6 +31,9 @@ Payment.belongsTo(User, {
   as: "user",
 });
 
-// Payment.hasMany(BookPayment);
+Payment.belongsTo(Book, {
+  foreignKey: "book_id",
+  as: "book",
+});
 
 export default Payment;
