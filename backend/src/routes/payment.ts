@@ -10,11 +10,7 @@ import { BookAttribute } from "../database/models/books";
 import { UserAttribute } from "../database/models/users";
 
 // Models
-import User from "../database/models/users";
-import Book from "../database/models/books";
 import Payment from "../database/models/payments";
-import BookPayment from "../database/models/books_of_payment";
-import dayjs from "dayjs";
 
 const router = express.Router();
 

@@ -29,7 +29,6 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "sequelize": "^6.37.5",
