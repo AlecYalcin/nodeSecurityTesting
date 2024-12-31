@@ -2,10 +2,27 @@
 import express from "express";
 
 // Modules
-import { sequelize, testConnection } from "./config/database";
+import { syncDatabase } from "./database/config/database";
+import userRoutes from "./routes/users";
 
+// Servidor Database
+syncDatabase()
+  .then(() => {
+    console.log("Database is ready.");
+  })
+  .catch((error) => {
+    console.log("An error has ocurred.\n", error);
+  });
+
+// Servidor Express
 const app = express();
 
-app.get("/", (req, res) => {});
+// Express com Json
+app.use(express.json());
+
+// Rotas de Usuários
+app.use("/users", userRoutes);
+
+// app.get("/", (req, res) => {});
 
 app.listen(3000);
