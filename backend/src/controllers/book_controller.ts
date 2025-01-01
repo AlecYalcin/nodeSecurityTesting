@@ -68,9 +68,9 @@ class BookController {
         },
       });
 
-      res.status(200).send({ message: "Livro excluído com sucesso! " });
+      return res.status(200).send({ message: "Livro excluído com sucesso! " });
     } catch (error) {
-      res.status(400).send({ message: "Aconteceu um erro ao excluir Livro. " });
+      return res.status(400).send({ message: "Falha ao excluir Livro. " });
     }
   };
 }
