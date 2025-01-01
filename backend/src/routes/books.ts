@@ -1,6 +1,4 @@
 import express from "express";
-import { sequelize } from "../database/config/database";
-import Book from "../database/models/books";
 import BookController from "../controllers/book_controller";
 
 const router = express.Router();
