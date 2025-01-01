@@ -1,6 +1,5 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../config/database";
-import BookPayment from "./books_of_payment";
 
 export interface BookAttribute {
   id: number;
