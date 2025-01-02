@@ -32,6 +32,10 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    bank: {
+      type: DataTypes.FLOAT,
+      defaultValue: 0,
+    },
     isAdmin: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
