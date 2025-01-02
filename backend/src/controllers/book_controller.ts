@@ -34,7 +34,7 @@ class BookController {
 
     try {
       const [books, metadata] = await sequelize.query(query);
-      return res.status(200).send(books);
+      return res.status(200).json(books);
     } catch (error) {
       return res.status(404).json({ message: "Falha ao buscar o livro." });
     }
@@ -51,9 +51,9 @@ class BookController {
         },
       });
 
-      return res.status(200).send({ message: "Sucesso ao atualizar o livro" });
+      return res.status(200).json({ message: "Sucesso ao atualizar o livro" });
     } catch (error) {
-      return res.status(400).send({ message: "Falha ao atualizar o livro." });
+      return res.status(400).json({ message: "Falha ao atualizar o livro." });
     }
   };
 
@@ -68,9 +68,9 @@ class BookController {
         },
       });
 
-      return res.status(200).send({ message: "Livro excluído com sucesso! " });
+      return res.status(200).json({ message: "Livro excluído com sucesso! " });
     } catch (error) {
-      return res.status(400).send({ message: "Falha ao excluir Livro. " });
+      return res.status(400).json({ message: "Falha ao excluir Livro. " });
     }
   };
 }

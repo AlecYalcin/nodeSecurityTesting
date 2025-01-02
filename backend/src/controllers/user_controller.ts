@@ -8,7 +8,7 @@ class UserController {
   createUser = async (req: any, res: any) => {
     try {
       await User.create(req.body);
-      return res.status(201).send({ message: "Sucesso ao criar usuário!" });
+      return res.status(201).json({ message: "Sucesso ao criar usuário!" });
     } catch (error) {
       return res.status(400).json({ message: "Falha ao criar o usuário." });
     }
@@ -33,9 +33,9 @@ class UserController {
 
     try {
       const [users, metadata] = await sequelize.query(query);
-      return res.status(200).send(users);
+      return res.status(200).json(users);
     } catch (error) {
-      return res.status(400).send({ message: "Falha ao buscar usuário." });
+      return res.status(400).json({ message: "Falha ao buscar usuário." });
     }
   };
 
@@ -50,9 +50,9 @@ class UserController {
         },
       });
 
-      return res.status(200).send({ message: "Sucesso ao atualizar usuário!" });
+      return res.status(200).json({ message: "Sucesso ao atualizar usuário!" });
     } catch (error) {
-      return res.status(400).send({ message: "Falha ao atualizar usuário." });
+      return res.status(400).json({ message: "Falha ao atualizar usuário." });
     }
   };
 
@@ -67,9 +67,9 @@ class UserController {
         },
       });
 
-      return res.status(200).send({ message: "Sucesso ao excluir usuário! " });
+      return res.status(200).json({ message: "Sucesso ao excluir usuário! " });
     } catch (error) {
-      return res.status(400).send({ message: "Falha ao excluir usuário. " });
+      return res.status(400).json({ message: "Falha ao excluir usuário. " });
     }
   };
 }
