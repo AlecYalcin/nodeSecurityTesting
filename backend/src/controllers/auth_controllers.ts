@@ -32,17 +32,13 @@ class AuthController {
     }
 
     // Gerando Token de Autenticação
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      this.SECRET_KEY,
-      {
-        expiresIn: "48h",
-      }
-    );
+    const token = jwt.sign({ id: user.id }, this.SECRET_KEY, {
+      expiresIn: "48h",
+    });
 
     return res
       .status(200)
-      .json({ message: "Autenticado com sucesso.", token: token });
+      .json({ message: "Autenticado com sucesso.", user: user, token: token });
   };
 
   // Register

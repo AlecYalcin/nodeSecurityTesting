@@ -1,5 +1,6 @@
 import express from "express";
 import PaymentController from "../controllers/payment_controller";
+import verifyToken from "../middlewares/verifyToken";
 
 const router = express.Router();
 
