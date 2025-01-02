@@ -18,4 +18,9 @@ router.delete("/:id", async (req, res) =>
   PaymentController.deletePayment(req, res)
 );
 
+// Transferência Bancária
+router.post("/transfer", async (req, res) =>
+  PaymentController.transferBank(req, res)
+);
+
 export default router;

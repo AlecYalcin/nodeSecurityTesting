@@ -9,7 +9,7 @@ import Payment from "../database/models/payments";
 
 // Interface
 import { BookAttribute } from "../database/models/books";
-import { UserAttribute } from "../database/models/users";
+import User, { UserAttribute } from "../database/models/users";
 
 class PaymentController {
   createPayment = async (req: any, res: any) => {
@@ -120,6 +120,69 @@ class PaymentController {
     } catch (error) {
       console.log(error);
       return res.status(400).json({ message: "Falha ao excluir pagamento." });
+    }
+  };
+
+  transferBank = async (req: any, res: any) => {
+    const { user_id, target_id, total } = req.body;
+
+    // Recuperando Usuário
+    const user = await sequelize.query<UserAttribute>(
+      `SELECT * FROM users WHERE id=${user_id}`,
+      {
+        type: QueryTypes.SELECT,
+        plain: true,
+      }
+    );
+
+    // Recuperando Usuário de Destino
+    const target = await sequelize.query<UserAttribute>(
+      `SELECT * FROM users WHERE id=${target_id}`,
+      {
+        type: QueryTypes.SELECT,
+        plain: true,
+      }
+    );
+
+    // ERRO 404: Verificando existência de usuários
+    if (!user || !target) {
+      return res.status(404).json({ message: "Usuários não encontrados. " });
+    }
+
+    // ERRO 400: Usuário e Target idênticos
+    if (user_id == target_id) {
+      return res.status(400).json({ message: "Usuários iguais." });
+    }
+
+    // ERRO 400: Quantidade não existente na conta
+    if (total > user.bank) {
+      return res.status(400).json({ message: "Banco insuficiente." });
+    }
+
+    try {
+      // Retirando do usuário
+      await User.update(
+        {
+          bank: user.bank - total,
+        },
+        {
+          where: { id: user_id },
+        }
+      );
+
+      // Adicionando ao usuário destino
+      await User.update(
+        {
+          bank: target.bank + total,
+        },
+        {
+          where: { id: target_id },
+        }
+      );
+
+      return res.status(200).json({ message: "Transferência realizada." });
+    } catch (error) {
+      return res.status(400).json({ message: "Aconteceu um erro." });
     }
   };
 }
