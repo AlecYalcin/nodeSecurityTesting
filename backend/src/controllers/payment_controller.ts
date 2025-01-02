@@ -43,12 +43,16 @@ class PaymentController {
       return;
     }
 
+    const price = book.price * quantity;
+
     // Verificar se a QUANTIDADE é POSSÍVEL
     if (book.stock < quantity) {
-      res.status(400).send({
-        message: "Não há quantidade de livros disponível.",
-      });
-      return;
+      return res.status(400).json({ message: "Livros indisponíveis." });
+    }
+
+    // Verificar se o USUÁRIO CONSEGUE PAGAR
+    if (user.bank < price) {
+      return res.status(400).json({ message: "Saldo insuficiente. " });
     }
 
     try {
@@ -56,16 +60,21 @@ class PaymentController {
       const payment = await Payment.create({
         user_id: user_id,
         book_id: book_id,
-        total_price: book.price * quantity,
+        total_price: price,
         quantity: quantity,
       });
 
-      // Retirando do Estoque
       if (payment) {
+        // Retirando do Estoque
         await sequelize.query(
           `UPDATE books SET stock = ${
             book.stock - quantity
           } WHERE id = ${book_id}`
+        );
+
+        // REtirando do Usuário
+        await sequelize.query(
+          `UPDATE users SET bank = ${user.bank - price} WHERE id = ${user_id}`
         );
       }
 
