@@ -7,6 +7,7 @@ export interface UserAttribute {
   email: string;
   password: string;
   isAdmin: boolean;
+  bank: number;
 }
 
 class User extends Model {}
