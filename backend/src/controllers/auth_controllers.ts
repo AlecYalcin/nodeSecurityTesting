@@ -42,7 +42,7 @@ class AuthController {
   };
 
   // Register
-  register = async (res: any, req: any) => {
+  register = async (req: any, res: any) => {
     try {
       // Tentando Criar Usuário
       const user = await User.create(req.body);
