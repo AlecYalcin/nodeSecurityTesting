@@ -32,7 +32,7 @@ class AuthController {
     }
 
     // Gerando Token de Autenticação
-    const token = jwt.sign({ id: user.id }, this.SECRET_KEY, {
+    const token = jwt.sign({ user: user }, this.SECRET_KEY, {
       expiresIn: "48h",
     });
 
@@ -42,7 +42,25 @@ class AuthController {
   };
 
   // Register
-  register = async (res: any, req: any) => {};
+  register = async (res: any, req: any) => {
+    try {
+      // Tentando Criar Usuário
+      const user = await User.create(req.body);
+
+      // Gerando Token de Autenticação
+      const token = jwt.sign({ user: user }, this.SECRET_KEY, {
+        expiresIn: "48h",
+      });
+
+      return res.status(201).json({
+        message: "Sucesso ao criar usuário!",
+        user: user,
+        token: token,
+      });
+    } catch (error) {
+      return res.status(400).json({ message: "Falha ao criar o usuário." });
+    }
+  };
 
   // Logout
   logout = async (res: any, req: any) => {};
