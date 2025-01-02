@@ -7,6 +7,7 @@ import seeder from "./database/seed";
 import userRoutes from "./routes/users";
 import bookRoutes from "./routes/books";
 import paymentRoutes from "./routes/payment";
+import authRoutes from "./routes/auth";
 
 // Servidor Database
 syncDatabase()
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use("/users", userRoutes);
 app.use("/books", bookRoutes);
 app.use("/payments", paymentRoutes);
+app.use("/auth", authRoutes);
 
 // Rota de Seeding
 app.get("/seed", async (req, res) => {
