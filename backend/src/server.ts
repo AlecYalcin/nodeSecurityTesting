@@ -37,7 +37,7 @@ app.get("/seed", async (req, res) => {
     res.status(200).send({ message: "O banco de dados foi semeado." });
   } catch (error) {
     console.log(error);
-    res.status(400).send({ message: "Aconteceu um erro ao semear.." });
+    res.status(400).send({ message: "Aconteceu um erro ao semear." });
   }
 });
 

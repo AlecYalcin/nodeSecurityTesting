@@ -43,6 +43,11 @@ class UserController {
   updateUser = async (req: any, res: any) => {
     const id = req.params.id;
 
+    // ERRO 403: Verificando Token
+    if (id != res.locals.user.id) {
+      return res.status(403).json({ message: "Usuário não autorizado. " });
+    }
+
     try {
       await User.update(req.body, {
         where: {
@@ -59,6 +64,11 @@ class UserController {
   // Delete User
   deleteUser = async (req: any, res: any) => {
     const id = req.params.id;
+
+    // ERRO 403: Verificando Token
+    if (id != res.locals.user.id) {
+      return res.status(403).json({ message: "Usuário não autorizado. " });
+    }
 
     try {
       await User.destroy({

@@ -28,6 +28,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
       return;
     }
 
+    res.locals.user = jwt_user;
     next();
   });
 };
