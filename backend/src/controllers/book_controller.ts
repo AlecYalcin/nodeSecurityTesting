@@ -1,6 +1,6 @@
 // Database Config
-import { QueryTypes } from "sequelize";
 import { sequelize } from "../database/config/database";
+
 // Model
 import Book from "../database/models/books";
 

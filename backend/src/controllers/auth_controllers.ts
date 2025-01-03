@@ -2,12 +2,8 @@
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 
-// Database Config
-import { QueryTypes } from "sequelize";
-import { sequelize } from "../database/config/database";
-
 // Models
-import User, { UserAttribute } from "../database/models/users";
+import User from "../database/models/users";
 
 // Configuração do dotenv
 dotenv.config();
@@ -19,14 +15,14 @@ class AuthController {
     const { email, password } = req.body;
 
     // Verificando existência de usuaŕio
-    const user = await sequelize.query<UserAttribute>(
-      `SELECT * FROM users WHERE email = ${email} AND password = ${password}`,
-      {
-        type: QueryTypes.SELECT,
-        plain: true,
-      }
-    );
+    const user = await User.findOne({
+      where: {
+        email: email,
+        password: password,
+      },
+    });
 
+    // ERRO 404: Usuário Não encontrado.
     if (!user) {
       return res.status(404).json({ message: "Usuário não encontrado." });
     }
@@ -34,10 +30,10 @@ class AuthController {
     // Gerando Token de Autenticação
     const token = jwt.sign(
       {
-        id: user.id,
-        email: user.email,
-        username: user.name,
-        isAdmin: user.isAdmin,
+        id: user.dataValues.id,
+        email: user.dataValues.email,
+        username: user.dataValues.name,
+        isAdmin: user.dataValues.isAdmin,
       },
       this.SECRET_KEY,
       {
@@ -53,8 +49,11 @@ class AuthController {
   // Register
   register = async (req: any, res: any) => {
     try {
+      // Separando elementos da requisição
+      const { name, email, password } = req.body;
+
       // Tentando Criar Usuário
-      const user = await User.create(req.body);
+      const user = await User.create({ name, email, password });
 
       // Gerando Token de Autenticação
       const token = jwt.sign(

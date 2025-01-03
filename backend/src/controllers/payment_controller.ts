@@ -8,7 +8,7 @@ import { sequelize } from "../database/config/database";
 import Payment from "../database/models/payments";
 
 // Interface
-import { BookAttribute } from "../database/models/books";
+import Book, { BookAttribute } from "../database/models/books";
 import User, { UserAttribute } from "../database/models/users";
 
 class PaymentController {
@@ -16,13 +16,7 @@ class PaymentController {
     const { user_id, book_id, quantity } = req.body;
 
     // Verificar se o USUÁRIO existe
-    const user = await sequelize.query<UserAttribute>(
-      `SELECT * FROM users WHERE id=${user_id}`,
-      {
-        type: QueryTypes.SELECT,
-        plain: true,
-      }
-    );
+    const user = await User.findOne({ where: { id: user_id } });
 
     // ERRO 404: Usuário não Encontrado.
     if (!user) {
@@ -35,29 +29,23 @@ class PaymentController {
     }
 
     // Verificar se o LIVRO existe
-    const book = await sequelize.query<BookAttribute>(
-      `SELECT * FROM books WHERE id=${book_id}`,
-      {
-        type: QueryTypes.SELECT,
-        plain: true,
-      }
-    );
+    const book = await Book.findOne({ where: { id: book_id } });
 
     // ERRO 404: Livro não Encontrado
     if (!book) {
       return res.status(404).json({ message: "Livro não encontrado." });
     }
 
-    const price = book.price * quantity;
+    const price = book.dataValues.price * quantity;
 
     // ERRO 400: Verificar se a QUANTIDADE é POSSÍVEL
-    if (book.stock < quantity) {
+    if (book.dataValues.stock < quantity) {
       return res.status(400).json({ message: "Livros indisponíveis." });
     }
 
     // ERRO 400: Verificar se o USUÁRIO CONSEGUE PAGAR
-    if (user.bank < price) {
-      return res.status(400).json({ message: "Saldo insuficiente. " });
+    if (user.dataValues.bank < price) {
+      return res.status(400).json({ message: "Saldo insuficiente." });
     }
 
     try {
@@ -71,29 +59,43 @@ class PaymentController {
 
       if (payment) {
         // Retirando do Estoque
-        await sequelize.query(
-          `UPDATE books SET stock = ${
-            book.stock - quantity
-          } WHERE id = ${book_id}`
+        await Book.update(
+          {
+            stock: book.dataValues.stock - quantity,
+          },
+          {
+            where: {
+              id: book_id,
+            },
+          }
         );
 
-        // Retirando do Usuário
-        await sequelize.query(
-          `UPDATE users SET bank = ${user.bank - price} WHERE id = ${user_id}`
+        // Retirando do Banco
+        await User.update(
+          {
+            bank: user.dataValues.bank - price,
+          },
+          {
+            where: {
+              id: user_id,
+            },
+          }
         );
       }
 
       return res.status(201).json({ message: "Sucesso ao criar pagamento!" });
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao criar pagamento. " });
+      return res.status(400).json({ message: "Falha ao criar pagamento." });
     }
   };
 
   readPayment = async (req: any, res: any) => {
     const { user_id, book_id, total, date } = req.query;
 
-    // Query de Busca
+    // Query de Busca para Usuários
     let query = `SELECT * FROM payments WHERE user_id=${res.locals.user.id} `;
+
+    // Query de Busca para Admins
     if (res.locals.user.isAdmin) {
       query = "SELECT * FROM payments WHERE 1=1 ";
     }
@@ -149,26 +151,22 @@ class PaymentController {
     const { user_id, target_id, total } = req.body;
 
     // Recuperando Usuário
-    const user = await sequelize.query<UserAttribute>(
-      `SELECT * FROM users WHERE id=${user_id}`,
-      {
-        type: QueryTypes.SELECT,
-        plain: true,
-      }
-    );
+    const user = await User.findOne({
+      where: {
+        id: user_id,
+      },
+    });
 
     // Recuperando Usuário de Destino
-    const target = await sequelize.query<UserAttribute>(
-      `SELECT * FROM users WHERE id=${target_id}`,
-      {
-        type: QueryTypes.SELECT,
-        plain: true,
-      }
-    );
+    const target = await User.findOne({
+      where: {
+        id: target_id,
+      },
+    });
 
     // ERRO 404: Verificando existência de usuários
     if (!user || !target) {
-      return res.status(404).json({ message: "Usuários não encontrados. " });
+      return res.status(404).json({ message: "Usuários não encontrados." });
     }
 
     // ERRO 403: Token não autorizado.
@@ -182,7 +180,7 @@ class PaymentController {
     }
 
     // ERRO 400: Quantidade não existente na conta
-    if (total > user.bank) {
+    if (total > user.dataValues.bank) {
       return res.status(400).json({ message: "Banco insuficiente." });
     }
 
@@ -190,7 +188,7 @@ class PaymentController {
       // Retirando do usuário
       await User.update(
         {
-          bank: user.bank - total,
+          bank: user.dataValues.bank - total,
         },
         {
           where: { id: user_id },
@@ -200,7 +198,7 @@ class PaymentController {
       // Adicionando ao usuário destino
       await User.update(
         {
-          bank: target.bank + total,
+          bank: target.dataValues.bank + total,
         },
         {
           where: { id: target_id },

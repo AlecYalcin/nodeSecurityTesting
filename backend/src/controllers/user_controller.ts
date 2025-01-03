@@ -25,7 +25,7 @@ class UserController {
     try {
       const user = await User.findOne({
         where: { id: id },
-        attributes: ["id", "name", "email", "isAdmin"],
+        attributes: ["id", "name", "email", "isAdmin", "bank"],
       });
 
       if (!user) {
@@ -49,14 +49,14 @@ class UserController {
     }
 
     // Query de Busca
-    let query = "SELECT id, name, email FROM users";
+    let query = "SELECT id, name, email, bank FROM users";
 
     // Alterando QUERY com Where
     if (id || name || email) {
       query = query + " WHERE ";
       if (id) query = query + `id=${id} `;
-      if (name) query = query + `name=${name} `;
-      if (email) query = query + `email=${email} `;
+      if (name) query = query + `name LIKE '%${name}%' `;
+      if (email) query = query + `email LIKE '%${email}%' `;
     }
 
     try {
