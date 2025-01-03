@@ -54,14 +54,13 @@ class UserController {
     }
 
     // Query de Busca
-    let query = "SELECT id, name, email, bank FROM users";
+    let query = "SELECT id, name, email, bank FROM users WHERE 1=1 ";
 
     // Alterando QUERY com Where
     if (id || name || email) {
-      query = query + " WHERE ";
-      if (id) query = query + `id=${id} `;
-      if (name) query = query + `name LIKE '%${name}%' `;
-      if (email) query = query + `email LIKE '%${email}%' `;
+      if (id) query = query + `AND id='${id}' `;
+      if (name) query = query + `AND name LIKE '%${name}%' `;
+      if (email) query = query + `AND email LIKE '%${email}%' `;
     }
 
     try {

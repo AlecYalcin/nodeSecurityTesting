@@ -7,6 +7,13 @@ import Book from "./models/books";
 // Criando Usuários
 export const userSeed = async () => {
   const userList = [
+    {
+      name: "admin",
+      email: "admin@admin.com",
+      password: "admin",
+      bank: "10000",
+      isAdmin: true,
+    },
     { name: "Foo", email: "foo@bar.com", password: "foo123", bank: "100.29" },
     { name: "Bar", email: "bar@blob.com", password: "bar123", bank: "20" },
     { name: "Blob", email: "blob@foo.com", password: "blob123", bank: "12000" },

@@ -90,7 +90,7 @@ class PaymentController {
   };
 
   readPayment = async (req: any, res: any) => {
-    const { user_id, book_id, total, date } = req.query;
+    const { user_id, book_id, greater, lower, date } = req.query;
 
     // Query de Busca para Usuários
     let query = `SELECT * FROM payments WHERE user_id=${res.locals.user.id} `;
@@ -100,10 +100,11 @@ class PaymentController {
       query = "SELECT * FROM payments WHERE 1=1 ";
     }
     // Alterando QUERY com Where
-    if (user_id || book_id || total || date) {
-      if (book_id) query += `AND book_id=${book_id} `;
-      if (total) query += `AND total_price<=${total} `;
-      if (date) query += +`AND date<=${date} `;
+    if (user_id || book_id || greater || date) {
+      if (book_id) query += `AND book_id='${book_id}' `;
+      if (greater) query += `AND total_price >='${greater}' `;
+      if (lower) query += `AND total_price <='${lower}' `;
+      if (date) query += +`AND date<='${date}' `;
       if (user_id && res.locals.user.isAdmin) query += `AND user_id=${user_id}`;
     }
 

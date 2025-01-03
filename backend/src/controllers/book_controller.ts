@@ -40,22 +40,20 @@ class BookController {
   // Read/List/Search Book
   searchBook = async (req: any, res: any) => {
     // Parâmetros de Busca
-    const { id, title, author, price, stock } = req.query;
+    const { id, title, author, greater, lower, stock } = req.query;
 
     // Query de Busca
-    let query = "SELECT * FROM books";
+    let query = "SELECT * FROM books WHERE 1=1 ";
 
     // Alterando QUERY com Where
-    if (id || title || author || price || stock) {
-      // Modificando QUERY para Busca com Where
-      query += " WHERE ";
-
+    if (id || title || author || greater || lower || stock) {
       // Adicionando Parâmetros
-      if (id) query += `id=${id}`;
-      if (title) query += `title LIKE '%${title}%'`;
-      if (author) query += `author LIKE '%${author}%'`;
-      if (price) query += `price<=${price} `;
-      if (stock) query += `stock<=${stock} `;
+      if (id) query += `AND id=${id} `;
+      if (title) query += `AND title LIKE '%${title}%' `;
+      if (author) query += `AND author LIKE '%${author}%' `;
+      if (greater) query += `AND price >='${greater}' `;
+      if (lower) query += `AND price <='${lower}' `;
+      if (stock) query += `AND stock<='${stock}' `;
     }
 
     try {
