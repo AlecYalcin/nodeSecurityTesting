@@ -6,6 +6,11 @@ import User from "../database/models/users";
 class UserController {
   // Create User
   createUser = async (req: any, res: any) => {
+    // ERRO 403: Verificando Token
+    if (!res.locals.user.isAdmin) {
+      return res.status(403).json({ message: "Usuário não autorizado." });
+    }
+
     try {
       await User.create(req.body);
       return res.status(201).json({ message: "Sucesso ao criar usuário!" });
