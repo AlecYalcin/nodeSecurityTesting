@@ -6,6 +6,11 @@ import Book from "../database/models/books";
 class BookController {
   // Create Book
   createBook = async (req: any, res: any) => {
+    // ERRO 403: Não-admins não autorizados.
+    if (!res.locals.user.isAdmin) {
+      return res.status(403).json({ message: "Usuário não autorizado. " });
+    }
+
     try {
       await Book.create(req.body);
       return res.status(201).json({ message: "Sucesso ao criar o livro." });
@@ -44,6 +49,11 @@ class BookController {
   updateBook = async (req: any, res: any) => {
     const id = req.params.id;
 
+    // ERRO 403: Não-admins não autorizados.
+    if (!res.locals.user.isAdmin) {
+      return res.status(403).json({ message: "Usuário não autorizado. " });
+    }
+
     try {
       const book = await Book.update(req.body, {
         where: {
@@ -60,6 +70,11 @@ class BookController {
   // Delete Book
   deleteBook = async (req: any, res: any) => {
     const id = req.params.id;
+
+    // ERRO 403: Não-admins não autorizados.
+    if (!res.locals.user.isAdmin) {
+      return res.status(403).json({ message: "Usuário não autorizado. " });
+    }
 
     try {
       const book = await Book.destroy({

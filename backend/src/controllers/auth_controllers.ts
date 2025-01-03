@@ -33,7 +33,12 @@ class AuthController {
 
     // Gerando Token de Autenticação
     const token = jwt.sign(
-      { id: user.id, email: user.email, username: user.name },
+      {
+        id: user.id,
+        email: user.email,
+        username: user.name,
+        isAdmin: user.isAdmin,
+      },
       this.SECRET_KEY,
       {
         expiresIn: "48h",
@@ -42,7 +47,7 @@ class AuthController {
 
     return res
       .status(200)
-      .json({ message: "Autenticado com sucesso.", user: user, token: token });
+      .json({ message: "Autenticado com sucesso.", token: token });
   };
 
   // Register
@@ -57,6 +62,7 @@ class AuthController {
           id: user.dataValues.id,
           email: user.dataValues.email,
           username: user.dataValues.name,
+          isAdmin: user.dataValues.isAdmin,
         },
         this.SECRET_KEY,
         {
@@ -66,7 +72,6 @@ class AuthController {
 
       return res.status(201).json({
         message: "Sucesso ao criar usuário!",
-        user: user,
         token: token,
       });
     } catch (error) {
