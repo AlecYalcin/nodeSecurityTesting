@@ -1,4 +1,5 @@
 // Database Config
+import { QueryTypes } from "sequelize";
 import { sequelize } from "../database/config/database";
 // Model
 import Book from "../database/models/books";
@@ -24,14 +25,10 @@ class BookController {
     const id = req.params.id;
 
     try {
-      const book = await Book.findOne({
-        where: {
-          id: id,
-        },
-      });
+      const book = await Book.findOne({ where: { id: id } });
 
       if (!book) {
-        return res.status(404).json({ message: "Livro naõ encontrado." });
+        return res.status(404).json({ message: "Livro não encontrado." });
       }
 
       return res.status(200).json(book);

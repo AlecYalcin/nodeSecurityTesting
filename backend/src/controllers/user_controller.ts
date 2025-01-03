@@ -14,13 +14,42 @@ class UserController {
     }
   };
 
-  // Read/List/Search User
   readUser = async (req: any, res: any) => {
+    const id = req.params.id;
+
+    // ERRO 403: Verificando Token
+    if (id != res.locals.user.id && !res.locals.user.isAdmin) {
+      return res.status(403).json({ message: "Usuário não autorizado." });
+    }
+
+    try {
+      const user = await User.findOne({
+        where: { id: id },
+        attributes: ["id", "name", "email", "isAdmin"],
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: "Usuário não encontrado." });
+      }
+
+      return res.status(200).json(user);
+    } catch (error) {
+      return res.status(400).json({ message: "Erro ao procurar usuário." });
+    }
+  };
+
+  // Read/List/Search User
+  searchUser = async (req: any, res: any) => {
     // Parâmetros de Busca
     const { id, name, email } = req.query;
 
+    // ERRO 403: Verificando Token
+    if (!res.locals.user.isAdmin) {
+      return res.status(403).json({ message: "Usuário não autorizado." });
+    }
+
     // Query de Busca
-    let query = "SELECT * FROM users";
+    let query = "SELECT id, name, email FROM users";
 
     // Alterando QUERY com Where
     if (id || name || email) {
@@ -28,7 +57,6 @@ class UserController {
       if (id) query = query + `id=${id} `;
       if (name) query = query + `name=${name} `;
       if (email) query = query + `email=${email} `;
-      console.log(query);
     }
 
     try {
@@ -45,7 +73,7 @@ class UserController {
 
     // ERRO 403: Verificando Token
     if (id != res.locals.user.id && !res.locals.user.isAdmin) {
-      return res.status(403).json({ message: "Usuário não autorizado. " });
+      return res.status(403).json({ message: "Usuário não autorizado." });
     }
 
     try {
@@ -67,7 +95,7 @@ class UserController {
 
     // ERRO 403: Verificando Token
     if (id != res.locals.user.id && !res.locals.user.isAdmin) {
-      return res.status(403).json({ message: "Usuário não autorizado. " });
+      return res.status(403).json({ message: "Usuário não autorizado." });
     }
 
     try {
@@ -77,9 +105,9 @@ class UserController {
         },
       });
 
-      return res.status(200).json({ message: "Sucesso ao excluir usuário! " });
+      return res.status(200).json({ message: "Sucesso ao excluir usuário!" });
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao excluir usuário. " });
+      return res.status(400).json({ message: "Falha ao excluir usuário." });
     }
   };
 }

@@ -7,8 +7,15 @@ const router = express.Router();
 // CREATE
 router.post("/", async (req, res) => UserController.createUser(req, res));
 
+// SEARCH
+router.get("/search", verifyToken, async (req, res) =>
+  UserController.searchUser(req, res)
+);
+
 // READ
-router.get("/", async (req, res) => UserController.readUser(req, res));
+router.get("/:id", verifyToken, async (req, res) =>
+  UserController.readUser(req, res)
+);
 
 // UPDATE
 router.patch("/:id", verifyToken, async (req, res) =>
