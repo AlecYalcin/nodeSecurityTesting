@@ -4,6 +4,8 @@ import verifyToken from "../middlewares/verifyToken";
 
 const router = express.Router();
 
+router.use(verifyToken);
+
 // Criação de Pagamento
 router.post("/create", async (req, res) =>
   PaymentController.createPayment(req, res)

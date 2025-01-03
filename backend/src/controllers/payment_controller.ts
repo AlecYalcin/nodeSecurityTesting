@@ -24,9 +24,14 @@ class PaymentController {
       }
     );
 
+    // ERRO 404: Usuário não Encontrado.
     if (!user) {
-      res.status(404).send({ message: "Usuário não encontrado." });
-      return;
+      return res.status(404).json({ message: "Usuário não encontrado." });
+    }
+
+    // ERRO 403: Token não autorizado.
+    if (res.locals.user.id != user_id) {
+      return res.status(404).json({ message: "Usuário não autorizado." });
     }
 
     // Verificar se o LIVRO existe
@@ -38,19 +43,19 @@ class PaymentController {
       }
     );
 
+    // ERRO 404: Livro não Encontrado
     if (!book) {
-      res.status(404).send({ message: "Livro não encontrado." });
-      return;
+      return res.status(404).json({ message: "Livro não encontrado." });
     }
 
     const price = book.price * quantity;
 
-    // Verificar se a QUANTIDADE é POSSÍVEL
+    // ERRO 400: Verificar se a QUANTIDADE é POSSÍVEL
     if (book.stock < quantity) {
       return res.status(400).json({ message: "Livros indisponíveis." });
     }
 
-    // Verificar se o USUÁRIO CONSEGUE PAGAR
+    // ERRO 400: Verificar se o USUÁRIO CONSEGUE PAGAR
     if (user.bank < price) {
       return res.status(400).json({ message: "Saldo insuficiente. " });
     }
@@ -72,7 +77,7 @@ class PaymentController {
           } WHERE id = ${book_id}`
         );
 
-        // REtirando do Usuário
+        // Retirando do Usuário
         await sequelize.query(
           `UPDATE users SET bank = ${user.bank - price} WHERE id = ${user_id}`
         );
@@ -85,17 +90,16 @@ class PaymentController {
   };
 
   readPayment = async (req: any, res: any) => {
-    const { id, total, date } = req.query;
+    const { book_id, total, date } = req.query;
 
     // Query de Busca
-    let query = "SELECT * FROM payments";
+    let query = `SELECT * FROM payments WHERE user_id=${res.locals.user.id} `;
 
     // Alterando QUERY com Where
-    if (id || total || date) {
-      query = query + " WHERE ";
-      if (id) query = query + `id=${id} `;
-      if (total) query = query + `total_price=${total} `;
-      if (date) query = query + `date=${date} `;
+    if (book_id || total || date) {
+      if (book_id) query += `AND book_id=${book_id} `;
+      if (total) query += `AND total_price<=${total} `;
+      if (date) query += +`AND date<=${date} `;
     }
 
     try {
@@ -113,8 +117,14 @@ class PaymentController {
       const payment = await Payment.destroy({
         where: {
           id: id,
+          user_id: res.locals.user.id,
         },
       });
+
+      // ERRO 403: Nenhum registro foi excluído. Logo, usuário não autorizado ou não existe esse registro
+      if (payment == 0) {
+        return res.status(403).json({ message: "Falha ao excluir pagamento." });
+      }
 
       return res.status(200).json({ message: "Sucesso ao excluir pagamento!" });
     } catch (error) {
@@ -147,6 +157,11 @@ class PaymentController {
     // ERRO 404: Verificando existência de usuários
     if (!user || !target) {
       return res.status(404).json({ message: "Usuários não encontrados. " });
+    }
+
+    // ERRO 403: Token não autorizado.
+    if (res.locals.user.id != user_id) {
+      return res.status(404).json({ message: "Usuário não autorizado." });
     }
 
     // ERRO 400: Usuário e Target idênticos
