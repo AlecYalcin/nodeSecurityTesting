@@ -44,7 +44,7 @@ class UserController {
     const id = req.params.id;
 
     // ERRO 403: Verificando Token
-    if (id != res.locals.user.id) {
+    if (id != res.locals.user.id && !res.locals.user.isAdmin) {
       return res.status(403).json({ message: "Usuário não autorizado. " });
     }
 
@@ -66,7 +66,7 @@ class UserController {
     const id = req.params.id;
 
     // ERRO 403: Verificando Token
-    if (id != res.locals.user.id) {
+    if (id != res.locals.user.id && !res.locals.user.isAdmin) {
       return res.status(403).json({ message: "Usuário não autorizado. " });
     }
 

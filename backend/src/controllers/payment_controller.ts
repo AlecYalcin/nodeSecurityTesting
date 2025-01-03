@@ -30,7 +30,7 @@ class PaymentController {
     }
 
     // ERRO 403: Token não autorizado.
-    if (res.locals.user.id != user_id) {
+    if (res.locals.user.id != user_id && !res.locals.user.isAdmin) {
       return res.status(404).json({ message: "Usuário não autorizado." });
     }
 
@@ -90,16 +90,19 @@ class PaymentController {
   };
 
   readPayment = async (req: any, res: any) => {
-    const { book_id, total, date } = req.query;
+    const { user_id, book_id, total, date } = req.query;
 
     // Query de Busca
     let query = `SELECT * FROM payments WHERE user_id=${res.locals.user.id} `;
-
+    if (res.locals.user.isAdmin) {
+      query = "SELECT * FROM payments WHERE 1=1 ";
+    }
     // Alterando QUERY com Where
-    if (book_id || total || date) {
+    if (user_id || book_id || total || date) {
       if (book_id) query += `AND book_id=${book_id} `;
       if (total) query += `AND total_price<=${total} `;
       if (date) query += +`AND date<=${date} `;
+      if (user_id && res.locals.user.isAdmin) query += `AND user_id=${user_id}`;
     }
 
     try {
@@ -114,12 +117,22 @@ class PaymentController {
     const id = req.params.id;
 
     try {
-      const payment = await Payment.destroy({
-        where: {
-          id: id,
-          user_id: res.locals.user.id,
-        },
-      });
+      let payment = 0;
+
+      if (res.locals.user.isAdmin) {
+        payment = await Payment.destroy({
+          where: {
+            id: id,
+          },
+        });
+      } else {
+        payment = await Payment.destroy({
+          where: {
+            id: id,
+            user_id: res.locals.user.id,
+          },
+        });
+      }
 
       // ERRO 403: Nenhum registro foi excluído. Logo, usuário não autorizado ou não existe esse registro
       if (payment == 0) {
@@ -128,7 +141,6 @@ class PaymentController {
 
       return res.status(200).json({ message: "Sucesso ao excluir pagamento!" });
     } catch (error) {
-      console.log(error);
       return res.status(400).json({ message: "Falha ao excluir pagamento." });
     }
   };
