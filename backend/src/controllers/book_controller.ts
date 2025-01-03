@@ -8,7 +8,7 @@ class BookController {
   createBook = async (req: any, res: any) => {
     // ERRO 403: Não-admins não autorizados.
     if (!res.locals.user.isAdmin) {
-      return res.status(403).json({ message: "Usuário não autorizado. " });
+      return res.status(403).json({ message: "Usuário não autorizado." });
     }
 
     try {
@@ -19,8 +19,25 @@ class BookController {
     }
   };
 
-  // Read/List/Search Book
+  // Read Book
   readBook = async (req: any, res: any) => {
+    const id = req.params.id;
+
+    try {
+      const book = await Book.findOne({
+        where: {
+          id: id,
+        },
+      });
+
+      return res.status(200).json(book);
+    } catch (error) {
+      return res.status(404).json({ message: "Livro não encontrado." });
+    }
+  };
+
+  // Read/List/Search Book
+  searchBook = async (req: any, res: any) => {
     // Parâmetros de Busca
     const { id, title, author, price, stock } = req.query;
 
@@ -29,12 +46,15 @@ class BookController {
 
     // Alterando QUERY com Where
     if (id || title || author || price || stock) {
-      query = query + " WHERE ";
-      if (id) query = query + `id=${id} `;
-      if (title) query = query + `title=${title} `;
-      if (author) query = query + `author=${author} `;
-      if (price) query = query + `price<=${price} `;
-      if (stock) query = query + `stock<=${stock} `;
+      // Modificando QUERY para Busca com Where
+      query += " WHERE ";
+
+      // Adicionando Parâmetros
+      if (id) query += `id=${id}`;
+      if (title) query += `title LIKE '%${title}%'`;
+      if (author) query += `author LIKE '%${author}%'`;
+      if (price) query += `price<=${price} `;
+      if (stock) query += `stock<=${stock} `;
     }
 
     try {
@@ -51,7 +71,7 @@ class BookController {
 
     // ERRO 403: Não-admins não autorizados.
     if (!res.locals.user.isAdmin) {
-      return res.status(403).json({ message: "Usuário não autorizado. " });
+      return res.status(403).json({ message: "Usuário não autorizado." });
     }
 
     try {
@@ -73,7 +93,7 @@ class BookController {
 
     // ERRO 403: Não-admins não autorizados.
     if (!res.locals.user.isAdmin) {
-      return res.status(403).json({ message: "Usuário não autorizado. " });
+      return res.status(403).json({ message: "Usuário não autorizado." });
     }
 
     try {
@@ -83,9 +103,9 @@ class BookController {
         },
       });
 
-      return res.status(200).json({ message: "Livro excluído com sucesso! " });
+      return res.status(200).json({ message: "Livro excluído com sucesso!" });
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao excluir Livro. " });
+      return res.status(400).json({ message: "Falha ao excluir Livro." });
     }
   };
 }

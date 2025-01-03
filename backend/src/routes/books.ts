@@ -9,8 +9,11 @@ router.post("/", verifyToken, async (req, res) =>
   BookController.createBook(req, res)
 );
 
+// SEARCH
+router.get("/search", async (req, res) => BookController.searchBook(req, res));
+
 // READ
-router.get("/", async (req, res) => BookController.readBook(req, res));
+router.get("/:id", async (req, res) => BookController.readBook(req, res));
 
 // UPDATE
 router.patch("/:id", verifyToken, async (req, res) =>
