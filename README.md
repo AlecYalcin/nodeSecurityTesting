@@ -42,7 +42,7 @@ Biblioteca CSS para estilização. Utilizada somente para fins visuais e gráfic
 
 Framework ORM utilizado para se criar uma conexão com o banco de dados que permite a utilização de queries inline. Dessa forma é possível testar as falhas anteriormente citadas de maneira direta.
 
-### MySQL
+### SQLite
 
 Banco de dados da aplicação. Responsável pela execução das funções que retornam usuários, objetos, e informações importantes.
 
