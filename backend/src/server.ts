@@ -19,7 +19,7 @@ const app = express();
 app.use(express.json());
 
 // Rotas de Usuários
-// app.use("/users", userRoutes);
+app.use("/users", userRoutes);
 // app.use("/books", bookRoutes);
 // app.use("/payments", paymentRoutes);
 // app.use("/auth", authRoutes);

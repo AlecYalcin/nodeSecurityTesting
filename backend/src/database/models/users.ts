@@ -49,7 +49,7 @@ class User {
     }
   }
 
-  static add = async (user: UserAttribute) => {
+  static create = async (user: UserAttribute) => {
     const newUser = new User();
 
     // Adicionando os atributos
@@ -63,12 +63,14 @@ class User {
     return new Promise((resolve, reject) => {
       const query = `INSERT INTO users (name, email, password, isAdmin, bank) VALUES ('${newUser.name}','${newUser.email}','${newUser.password}','${newUser.isAdmin}','${newUser.bank}')`;
 
-      db.run(query, function (error) {
+      console.log(query);
+
+      db.exec(query, function (error) {
         if (error) {
-          return error;
+          reject(error);
         } else {
-          newUser.id = this.lastID;
-          return newUser;
+          // newUser.id = this.lastID;
+          resolve(newUser);
         }
       });
     });
@@ -137,18 +139,28 @@ class User {
     // Procurando na Base de Dados
     const user = await this.retrieve(id);
 
-    // Executando Update
+    // Executando Delete
     return new Promise((resolve, reject) => {
       const query = `DELETE FROM users WHERE id=${id}`;
 
-      return new Promise((resolve, reject) => {
-        db.run(query, function (error) {
-          if (error) {
-            reject(error);
-          } else {
-            resolve([]);
-          }
-        });
+      db.run(query, function (error) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve([]);
+        }
+      });
+    });
+  };
+
+  static search = async (query: string) => {
+    return new Promise((resolve, reject) => {
+      db.all(query, function (error, instances) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(instances);
+        }
       });
     });
   };

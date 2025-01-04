@@ -1,5 +1,6 @@
 // Database Config
-import { sequelize } from "../database/config/database";
+import { db } from "../database/config/database";
+
 // Model
 import User from "../database/models/users";
 
@@ -15,7 +16,9 @@ class UserController {
       await User.create(req.body);
       return res.status(201).json({ message: "Sucesso ao criar usuário!" });
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao criar o usuário." });
+      return res
+        .status(400)
+        .json({ message: "Falha ao criar o usuário.", error: error });
     }
   };
 
@@ -28,10 +31,7 @@ class UserController {
     }
 
     try {
-      const user = await User.findOne({
-        where: { id: id },
-        attributes: ["id", "name", "email", "isAdmin", "bank"],
-      });
+      const user = await User.retrieve(id);
 
       if (!user) {
         return res.status(404).json({ message: "Usuário não encontrado." });
@@ -64,7 +64,7 @@ class UserController {
     }
 
     try {
-      const [users, metadata] = await sequelize.query(query);
+      const users = await User.search(query);
       return res.status(200).json(users);
     } catch (error) {
       return res.status(400).json({ message: "Falha ao buscar usuário." });
@@ -81,11 +81,7 @@ class UserController {
     }
 
     try {
-      await User.update(req.body, {
-        where: {
-          id: id,
-        },
-      });
+      await User.update(id, req.body);
 
       return res.status(200).json({ message: "Sucesso ao atualizar usuário!" });
     } catch (error) {
@@ -103,11 +99,7 @@ class UserController {
     }
 
     try {
-      await User.destroy({
-        where: {
-          id: id,
-        },
-      });
+      await User.delete(id);
 
       return res.status(200).json({ message: "Sucesso ao excluir usuário!" });
     } catch (error) {
