@@ -31,7 +31,7 @@ class UserController {
     }
 
     try {
-      const user = await User.retrieve(id);
+      const user = await User.retrieve({ id });
 
       if (!user) {
         return res.status(404).json({ message: "Usuário não encontrado." });

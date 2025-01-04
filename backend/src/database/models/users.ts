@@ -9,15 +9,23 @@ export interface UserAttribute {
   bank?: number;
 }
 
-class User {
-  private id!: number;
-  private name!: string;
-  private email!: string;
-  private password!: string;
-  private isAdmin!: boolean;
-  private bank!: number;
+export interface WhereUser {
+  id?: number;
+  name?: string;
+  password?: string;
+  email?: string;
+  isAdmin?: boolean;
+}
 
-  static createUserTable(): any {
+class User {
+  public id!: number;
+  public name!: string;
+  public email!: string;
+  public password!: string;
+  public isAdmin!: boolean;
+  public bank!: number;
+
+  static createUserTable(): void {
     try {
       db.serialize(() => {
         db.run(`
@@ -49,7 +57,7 @@ class User {
     }
   }
 
-  static create = async (user: UserAttribute) => {
+  static create = async (user: UserAttribute): Promise<User> => {
     const newUser = new User();
 
     // Adicionando os atributos
@@ -65,23 +73,31 @@ class User {
 
       console.log(query);
 
-      db.exec(query, function (error) {
+      db.run(query, function (error) {
         if (error) {
           reject(error);
         } else {
-          // newUser.id = this.lastID;
+          newUser.id = this.lastID;
           resolve(newUser);
         }
       });
     });
   };
 
-  static retrieve = async (id: number): Promise<User> => {
+  static retrieve = async (where: WhereUser): Promise<User> => {
     const user = new User();
 
     // Procurando na Base de Dados
     return new Promise((resolve, reject) => {
-      const query = `SELECT id, name, email, bank FROM users WHERE id=${id}`;
+      let query = `SELECT id, name, email, bank FROM users WHERE 1=1 `;
+
+      if (where && typeof where === "object") {
+        for (const [key, value] of Object.entries(where)) {
+          query += `AND ${key}=${value}`;
+        }
+      } else {
+        reject("Parâmetros não existenstes.");
+      }
 
       db.get(query, function (error, instance: UserAttribute) {
         if (error) {
@@ -100,9 +116,9 @@ class User {
     });
   };
 
-  static update = async (id: number, updates: any) => {
+  static update = async (id: number, updates: any): Promise<void> => {
     // Procurando na Base de Dados
-    const user = await this.retrieve(id);
+    const user = await this.retrieve({ id: id });
 
     // Executando Update
     return new Promise((resolve, reject) => {
@@ -129,15 +145,15 @@ class User {
         if (error) {
           reject(error);
         } else {
-          resolve([]);
+          resolve();
         }
       });
     });
   };
 
-  static delete = async (id: number) => {
+  static delete = async (id: number): Promise<void> => {
     // Procurando na Base de Dados
-    const user = await this.retrieve(id);
+    const user = await this.retrieve({ id: id });
 
     // Executando Delete
     return new Promise((resolve, reject) => {
@@ -147,15 +163,15 @@ class User {
         if (error) {
           reject(error);
         } else {
-          resolve([]);
+          resolve();
         }
       });
     });
   };
 
-  static search = async (query: string) => {
+  static search = async (query: string): Promise<Array<User>> => {
     return new Promise((resolve, reject) => {
-      db.all(query, function (error, instances) {
+      db.all(query, function (error, instances: Array<User>) {
         if (error) {
           reject(error);
         } else {

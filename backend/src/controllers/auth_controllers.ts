@@ -15,11 +15,9 @@ class AuthController {
     const { email, password } = req.body;
 
     // Verificando existência de usuaŕio
-    const user = await User.findOne({
-      where: {
-        email: email,
-        password: password,
-      },
+    const user = await User.retrieve({
+      email: email,
+      password: password,
     });
 
     // ERRO 404: Usuário Não encontrado.
@@ -30,10 +28,10 @@ class AuthController {
     // Gerando Token de Autenticação
     const token = jwt.sign(
       {
-        id: user.dataValues.id,
-        email: user.dataValues.email,
-        username: user.dataValues.name,
-        isAdmin: user.dataValues.isAdmin,
+        id: user.id,
+        email: user.email,
+        username: user.name,
+        isAdmin: user.isAdmin,
       },
       this.SECRET_KEY,
       {
@@ -53,15 +51,19 @@ class AuthController {
       const { name, email, password } = req.body;
 
       // Tentando Criar Usuário
-      const user = await User.create({ name, email, password });
+      const user = await User.create({
+        name: name,
+        email: email,
+        password: password,
+      });
 
       // Gerando Token de Autenticação
       const token = jwt.sign(
         {
-          id: user.dataValues.id,
-          email: user.dataValues.email,
-          username: user.dataValues.name,
-          isAdmin: user.dataValues.isAdmin,
+          id: user.id,
+          email: user.email,
+          username: user.name,
+          isAdmin: user.isAdmin,
         },
         this.SECRET_KEY,
         {
