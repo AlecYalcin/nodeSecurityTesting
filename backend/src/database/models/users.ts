@@ -80,7 +80,7 @@ class User {
           query += `AND ${key}='${value}' `;
         }
       } else {
-        reject("Parâmetros não existenstes.");
+        reject("Parâmetros não existentes.");
       }
 
       db.get(query, function (error, instance: UserAttribute) {
