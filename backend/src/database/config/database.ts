@@ -1,24 +1,16 @@
-import { Sequelize } from "sequelize";
+import sqlite from "sqlite3";
 
-export const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "./library.db",
-  logging: false,
+// Models
+import User from "../models/users";
+
+export const db = new sqlite.Database("library.db", (error) => {
+  if (error) {
+    console.error("Erro ao conectar ao SQLite.\n", error.message);
+  } else {
+    console.log("Conexão a Base de Dados Estabelecida!");
+  }
 });
 
-export const testDatabase = async () => {
-  try {
-    await sequelize.authenticate();
-    return true;
-  } catch (error) {
-    return false;
-  }
-};
-
-export const syncDatabase = async () => {
-  try {
-    await sequelize.sync();
-  } catch (error) {
-    console.log("Erro in database syncronization.\n", error);
-  }
+export const createTables = async () => {
+  await User.createUserTable();
 };
