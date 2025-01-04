@@ -15,33 +15,38 @@ class AuthController {
     const { email, password } = req.body;
 
     // Verificando existência de usuaŕio
-    const user = await User.retrieve({
-      email: email,
-      password: password,
-    });
+    try {
+      const user = await User.retrieve({
+        email,
+        password,
+      });
 
-    // ERRO 404: Usuário Não encontrado.
-    if (!user) {
-      return res.status(404).json({ message: "Usuário não encontrado." });
-    }
-
-    // Gerando Token de Autenticação
-    const token = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-        username: user.name,
-        isAdmin: user.isAdmin,
-      },
-      this.SECRET_KEY,
-      {
-        expiresIn: "48h",
+      if (typeof user.isAdmin === "string" && user.isAdmin == "true") {
+        user.isAdmin = true;
+      } else if (typeof user.isAdmin === "string" && user.isAdmin == "false") {
+        user.isAdmin = false;
       }
-    );
 
-    return res
-      .status(200)
-      .json({ message: "Autenticado com sucesso.", token: token });
+      // Gerando Token de Autenticação
+      const token = jwt.sign(
+        {
+          id: user.id,
+          email: user.email,
+          username: user.name,
+          isAdmin: user.isAdmin,
+        },
+        this.SECRET_KEY,
+        {
+          expiresIn: "48h",
+        }
+      );
+
+      return res.status(200).json({ message: "Autenticado.", token: token });
+    } catch (error) {
+      return res.status(400).json({
+        message: error,
+      });
+    }
   };
 
   // Register
@@ -76,7 +81,7 @@ class AuthController {
         token: token,
       });
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao criar o usuário." });
+      return res.status(400).json({ message: error });
     }
   };
 

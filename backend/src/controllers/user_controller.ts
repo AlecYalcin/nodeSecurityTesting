@@ -13,7 +13,9 @@ class UserController {
     }
 
     try {
-      await User.create(req.body);
+      const { name, email, password } = req.body;
+
+      await User.create({ name, email, password });
       return res.status(201).json({ message: "Sucesso ao criar usuário!" });
     } catch (error) {
       return res
@@ -46,21 +48,22 @@ class UserController {
   // Read/List/Search User
   searchUser = async (req: any, res: any) => {
     // Parâmetros de Busca
-    const { id, name, email } = req.query;
-
+    const { id, name, email, isAdmin } = req.query;
     // ERRO 403: Verificando Token
+
     if (!res.locals.user.isAdmin) {
       return res.status(403).json({ message: "Usuário não autorizado." });
     }
 
     // Query de Busca
-    let query = "SELECT id, name, email, bank FROM users WHERE 1=1 ";
+    let query = "SELECT id, name, email, isAdmin, bank FROM users WHERE 1=1 ";
 
     // Alterando QUERY com Where
-    if (id || name || email) {
-      if (id) query = query + `AND id='${id}' `;
-      if (name) query = query + `AND name LIKE '%${name}%' `;
-      if (email) query = query + `AND email LIKE '%${email}%' `;
+    if (id || name || email || isAdmin) {
+      if (id) query += `AND id='${id}' `;
+      if (name) query += `AND name LIKE '%${name}%' `;
+      if (email) query += `AND email LIKE '%${email}%' `;
+      if (isAdmin) query += `AND isAdmin='${isAdmin}'`;
     }
 
     try {

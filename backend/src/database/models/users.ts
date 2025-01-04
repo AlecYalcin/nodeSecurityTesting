@@ -5,7 +5,7 @@ export interface UserAttribute {
   name: string;
   email: string;
   password: string;
-  isAdmin?: boolean;
+  isAdmin?: boolean | string;
   bank?: number;
 }
 
@@ -14,17 +14,10 @@ export interface WhereUser {
   name?: string;
   password?: string;
   email?: string;
-  isAdmin?: boolean;
+  isAdmin?: boolean | string;
 }
 
 class User {
-  public id!: number;
-  public name!: string;
-  public email!: string;
-  public password!: string;
-  public isAdmin!: boolean;
-  public bank!: number;
-
   static createUserTable(): void {
     try {
       db.serialize(() => {
@@ -57,43 +50,34 @@ class User {
     }
   }
 
-  static create = async (user: UserAttribute): Promise<User> => {
-    const newUser = new User();
-
-    // Adicionando os atributos
-    newUser.name = user.name;
-    newUser.email = user.email;
-    newUser.password = user.password;
-    newUser.isAdmin = user.isAdmin || false;
-    newUser.bank = user.bank || 0;
-
+  static create = async (user: UserAttribute): Promise<UserAttribute> => {
     // Adicionando a base de dados
     return new Promise((resolve, reject) => {
-      const query = `INSERT INTO users (name, email, password, isAdmin, bank) VALUES ('${newUser.name}','${newUser.email}','${newUser.password}','${newUser.isAdmin}','${newUser.bank}')`;
-
-      console.log(query);
+      const query = `INSERT INTO users (name, email, password, isAdmin, bank) VALUES ('${
+        user.name
+      }','${user.email}','${user.password}','${user.isAdmin || false}','${
+        user.bank || 0
+      }')`;
 
       db.run(query, function (error) {
         if (error) {
           reject(error);
         } else {
-          newUser.id = this.lastID;
-          resolve(newUser);
+          user.id = this.lastID;
+          resolve(user);
         }
       });
     });
   };
 
-  static retrieve = async (where: WhereUser): Promise<User> => {
-    const user = new User();
-
+  static retrieve = async (where: WhereUser): Promise<UserAttribute> => {
     // Procurando na Base de Dados
     return new Promise((resolve, reject) => {
-      let query = `SELECT id, name, email, bank FROM users WHERE 1=1 `;
+      let query = `SELECT id, name, email, bank, isAdmin FROM users WHERE 1=1 `;
 
       if (where && typeof where === "object") {
         for (const [key, value] of Object.entries(where)) {
-          query += `AND ${key}=${value}`;
+          query += `AND ${key}='${value}' `;
         }
       } else {
         reject("Parâmetros não existenstes.");
@@ -105,12 +89,7 @@ class User {
         } else if (instance === undefined) {
           reject("Usuário não encontrado.");
         } else {
-          user.id = instance.id || 0;
-          user.name = instance.name;
-          user.email = instance.email;
-          user.bank = instance.bank || 0;
-
-          resolve(user);
+          resolve(instance);
         }
       });
     });
@@ -169,9 +148,9 @@ class User {
     });
   };
 
-  static search = async (query: string): Promise<Array<User>> => {
+  static search = async (query: string): Promise<Array<UserAttribute>> => {
     return new Promise((resolve, reject) => {
-      db.all(query, function (error, instances: Array<User>) {
+      db.all(query, function (error, instances: Array<UserAttribute>) {
         if (error) {
           reject(error);
         } else {
