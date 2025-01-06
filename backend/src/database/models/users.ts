@@ -1,11 +1,12 @@
-import { db } from "../config/database";
+import { ResultSetHeader, RowDataPacket } from "mysql2";
+import { connection } from "../config/database";
 
 export interface UserAttribute {
   id?: number;
   name: string;
   email: string;
   password: string;
-  isAdmin?: boolean | string;
+  isAdmin?: number | string;
   bank?: number;
 }
 
@@ -14,27 +15,26 @@ export interface WhereUser {
   name?: string;
   password?: string;
   email?: string;
-  isAdmin?: boolean | string;
+  isAdmin?: number | string;
 }
 
 class User {
   static createUserTable(): void {
     try {
-      db.serialize(() => {
-        db.run(`
+      connection.query(`
         CREATE TABLE IF NOT EXISTS users (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT NOT NULL,
-          email TEXT NOT NULL UNIQUE,
-          password TEXT NOT NULL,
-          bank REAL DEFAULT 0,
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          email VARCHAR(255) NOT NULL UNIQUE,
+          password VARCHAR(255) NOT NULL,
+          bank DECIMAL(10,2) DEFAULT 0,
           isAdmin BOOLEAN DEFAULT 0,
-          createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-          updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+          createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
 
-        db.run(`
+      connection.query(`
         CREATE TRIGGER IF NOT EXISTS updatedAt_user
         AFTER UPDATE On users
         FOR EACH ROW
@@ -44,33 +44,36 @@ class User {
           WHERE id = OLD.id;
         END;
       `);
-      });
+
+      console.log("Tabela de Usuários criada!");
     } catch (error) {
       console.error("Aconteceu um erro ao criar a tabela de usuários.", error);
     }
   }
 
   static create = async (user: UserAttribute): Promise<UserAttribute> => {
+    console.log(user);
     // Adicionando a base de dados
     return new Promise((resolve, reject) => {
       const query = `INSERT INTO users (name, email, password, isAdmin, bank) VALUES ('${
         user.name
-      }','${user.email}','${user.password}','${user.isAdmin || false}','${
+      }','${user.email}','${user.password}','${user.isAdmin ? 1 : 0 || 0}','${
         user.bank || 0
       }')`;
 
-      db.run(query, function (error) {
+      connection.query<ResultSetHeader>(query, function (error, results) {
         if (error) {
+          console.log(error);
           reject(error);
         } else {
-          user.id = this.lastID;
+          user.id = results.insertId;
           resolve(user);
         }
       });
     });
   };
 
-  static retrieve = async (where: WhereUser): Promise<UserAttribute> => {
+  static retrieve = async (where: WhereUser): Promise<RowDataPacket> => {
     // Procurando na Base de Dados
     return new Promise((resolve, reject) => {
       let query = `SELECT id, name, email, bank, isAdmin FROM users WHERE 1=1 `;
@@ -83,13 +86,15 @@ class User {
         reject("Parâmetros não existentes.");
       }
 
-      db.get(query, function (error, instance: UserAttribute) {
+      console.log(query);
+
+      connection.query<RowDataPacket[]>(query, function (error, instance) {
         if (error) {
           reject(error);
-        } else if (instance === undefined) {
+        } else if (instance.length == 0) {
           reject("Usuário não encontrado.");
         } else {
-          resolve(instance);
+          resolve(instance[0]);
         }
       });
     });
@@ -120,7 +125,7 @@ class User {
       query += ` WHERE id=${id};`;
 
       // Executando Query
-      db.run(query, function (error) {
+      connection.query(query, function (error) {
         if (error) {
           reject(error);
         } else {
@@ -138,7 +143,7 @@ class User {
     return new Promise((resolve, reject) => {
       const query = `DELETE FROM users WHERE id=${id}`;
 
-      db.run(query, function (error) {
+      connection.query(query, function (error) {
         if (error) {
           reject(error);
         } else {
@@ -148,9 +153,9 @@ class User {
     });
   };
 
-  static search = async (query: string): Promise<Array<UserAttribute>> => {
+  static search = async (query: string): Promise<Array<RowDataPacket>> => {
     return new Promise((resolve, reject) => {
-      db.all(query, function (error, instances: Array<UserAttribute>) {
+      connection.query<RowDataPacket[]>(query, function (error, instances) {
         if (error) {
           reject(error);
         } else {

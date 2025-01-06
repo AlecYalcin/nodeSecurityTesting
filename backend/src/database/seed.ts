@@ -1,5 +1,3 @@
-import { sequelize } from "./config/database";
-
 // Models
 import User from "./models/users";
 import Book from "./models/books";
@@ -11,12 +9,12 @@ export const userSeed = async () => {
       name: "admin",
       email: "admin@admin.com",
       password: "admin",
-      bank: "10000",
-      isAdmin: true,
+      bank: 10000,
+      isAdmin: "1",
     },
-    { name: "Foo", email: "foo@bar.com", password: "foo123", bank: "100.29" },
-    { name: "Bar", email: "bar@blob.com", password: "bar123", bank: "20" },
-    { name: "Blob", email: "blob@foo.com", password: "blob123", bank: "12000" },
+    { name: "Foo", email: "foo@bar.com", password: "foo123", bank: 100.29 },
+    { name: "Bar", email: "bar@blob.com", password: "bar123", bank: 20 },
+    { name: "Blob", email: "blob@foo.com", password: "blob123", bank: 12000 },
   ];
 
   userList.forEach(async (user) => {

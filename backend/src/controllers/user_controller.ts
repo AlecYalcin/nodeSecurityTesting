@@ -13,9 +13,9 @@ class UserController {
     }
 
     try {
-      const { name, email, password } = req.body;
+      const { name, email, password, bank, isAdmin } = req.body;
 
-      await User.create({ name, email, password });
+      await User.create({ name, email, password, bank, isAdmin });
       return res.status(201).json({ message: "Sucesso ao criar usuário!" });
     } catch (error) {
       return res

@@ -2,7 +2,7 @@
 import express from "express";
 
 // Modules
-import { createTables } from "./database/config/database";
+import { createTables, connection_clear } from "./database/config/database";
 import seeder from "./database/seed";
 import userRoutes from "./routes/users";
 import bookRoutes from "./routes/books";
@@ -10,7 +10,12 @@ import paymentRoutes from "./routes/payment";
 import authRoutes from "./routes/auth";
 
 // Estabelecendo Banco de Dados
-createTables();
+if (connection_clear()) {
+  console.log("Conectado ao banco de dados!");
+  createTables();
+} else {
+  console.error("Erro ao conectar na base de dados.");
+}
 
 // Servidor Express
 const app = express();
