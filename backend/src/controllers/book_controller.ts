@@ -1,6 +1,3 @@
-// Database Config
-import { sequelize } from "../database/config/database";
-
 // Model
 import Book from "../database/models/books";
 
@@ -25,7 +22,7 @@ class BookController {
     const id = req.params.id;
 
     try {
-      const book = await Book.findOne({ where: { id: id } });
+      const book = await Book.retrieve({ id: id });
 
       if (!book) {
         return res.status(404).json({ message: "Livro não encontrado." });
@@ -43,7 +40,7 @@ class BookController {
     const { id, title, author, greater, lower, stock } = req.query;
 
     // Query de Busca
-    let query = "SELECT * FROM books WHERE 1=1 ";
+    let query = "SELECT id, title, author, price, stock FROM books WHERE 1=1 ";
 
     // Alterando QUERY com Where
     if (id || title || author || greater || lower || stock) {
@@ -57,10 +54,12 @@ class BookController {
     }
 
     try {
-      const [books, metadata] = await sequelize.query(query);
+      const books = await Book.search(query);
       return res.status(200).json(books);
     } catch (error) {
-      return res.status(404).json({ message: "Falha ao buscar o livro." });
+      return res
+        .status(404)
+        .json({ message: "Falha ao buscar o livro.", error: error });
     }
   };
 
@@ -74,15 +73,13 @@ class BookController {
     }
 
     try {
-      const book = await Book.update(req.body, {
-        where: {
-          id: id,
-        },
-      });
+      await Book.update(id, req.body);
 
       return res.status(200).json({ message: "Sucesso ao atualizar o livro" });
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao atualizar o livro." });
+      return res
+        .status(400)
+        .json({ message: "Falha ao atualizar o livro.", error: error });
     }
   };
 
@@ -96,11 +93,7 @@ class BookController {
     }
 
     try {
-      const book = await Book.destroy({
-        where: {
-          id: id,
-        },
-      });
+      await Book.delete(id);
 
       return res.status(200).json({ message: "Livro excluído com sucesso!" });
     } catch (error) {

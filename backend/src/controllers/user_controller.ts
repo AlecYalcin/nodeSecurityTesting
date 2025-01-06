@@ -1,6 +1,3 @@
-// Database Config
-import { db } from "../database/config/database";
-
 // Model
 import User from "../database/models/users";
 

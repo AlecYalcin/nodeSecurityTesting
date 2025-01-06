@@ -19,9 +19,10 @@ export interface WhereUser {
 }
 
 class User {
-  static createUserTable(): void {
-    try {
-      connection.query(`
+  static async createTable(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `
         CREATE TABLE IF NOT EXISTS users (
           id INT AUTO_INCREMENT PRIMARY KEY,
           name VARCHAR(255) NOT NULL,
@@ -32,9 +33,14 @@ class User {
           createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
-      `);
+      `,
+        (error) => {
+          reject(error);
+        }
+      );
 
-      connection.query(`
+      connection.query(
+        `
         CREATE TRIGGER IF NOT EXISTS updatedAt_user
         AFTER UPDATE On users
         FOR EACH ROW
@@ -43,16 +49,18 @@ class User {
           SET updatedAt = CURRENT_TIMESTAMP  
           WHERE id = OLD.id;
         END;
-      `);
+      `,
+        (error) => {
+          reject(error);
+        }
+      );
 
       console.log("Tabela de Usuários criada!");
-    } catch (error) {
-      console.error("Aconteceu um erro ao criar a tabela de usuários.", error);
-    }
+      resolve();
+    });
   }
 
   static create = async (user: UserAttribute): Promise<UserAttribute> => {
-    console.log(user);
     // Adicionando a base de dados
     return new Promise((resolve, reject) => {
       const query = `INSERT INTO users (name, email, password, isAdmin, bank) VALUES ('${
@@ -63,7 +71,6 @@ class User {
 
       connection.query<ResultSetHeader>(query, function (error, results) {
         if (error) {
-          console.log(error);
           reject(error);
         } else {
           user.id = results.insertId;
@@ -85,8 +92,6 @@ class User {
       } else {
         reject("Parâmetros não existentes.");
       }
-
-      console.log(query);
 
       connection.query<RowDataPacket[]>(query, function (error, instance) {
         if (error) {
