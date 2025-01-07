@@ -1,0 +1,18 @@
+version: "3.3"
+
+services:
+  database:
+    container_name: "mysql-security"
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: node_security
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - "3336:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+volumes:
+  db_data:
+    driver: local
