@@ -99,6 +99,7 @@ class User {
         } else if (instance.length == 0) {
           reject("Usuário não encontrado.");
         } else {
+          instance[0].bank = Number(instance[0].bank);
           resolve(instance[0]);
         }
       });

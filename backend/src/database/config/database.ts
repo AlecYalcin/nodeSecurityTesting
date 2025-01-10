@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 // Models
 import User from "../models/users";
 import Book from "../models/books";
+import Payment from "../models/payments";
 
 // Configurando variáveis de ambiente
 dotenv.config();
@@ -51,4 +52,5 @@ export const connection_clear = () => {
 export const createTables = async () => {
   await Book.createTable();
   await User.createTable();
+  await Payment.createTable();
 };
