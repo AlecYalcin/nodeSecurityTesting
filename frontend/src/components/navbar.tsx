@@ -23,12 +23,12 @@ const Navbar = () => {
 
           {/* Profile/Auth Bar */}
           <div className="d-flex justify-content-between">
-            <button className="btn btn-primary me-2" type="button">
+            <a className="btn btn-primary me-2" href="/login">
               Login
-            </button>
-            <button className="btn btn-outline-primary" type="button">
+            </a>
+            <a className="btn btn-outline-primary" href="/register">
               Registro
-            </button>
+            </a>
           </div>
         </div>
       </nav>
