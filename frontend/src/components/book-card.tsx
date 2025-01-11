@@ -11,7 +11,7 @@ const BookCard = ({
 }) => {
   return (
     <div>
-      <a href={`/${book.id}`} className="text-decoration-none">
+      <a href={`/book/${book.id}`} className="text-decoration-none">
         <div className="card text-center bg-light-subtle p-1">
           <img
             src="https://dummyimage.com/300x300/000/fff&text=Book"
