@@ -30,6 +30,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/profile/:id" element={<h1>Perfil do Usuário X</h1>} />
         <Route path="/profile/:id/edit" element={<h1>Editar Perfil X</h1>} />
         <Route path="/profile/:id/history" element={<h1>Pagamentos</h1>} />
+        <Route path="/profile/search" element={<h1>Procurar</h1>} />
 
         {/* Auth Routes */}
         <Route path="/login" element={<Login />} />

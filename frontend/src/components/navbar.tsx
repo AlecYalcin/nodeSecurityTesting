@@ -1,10 +1,28 @@
+import SideBar from "./side-bar";
+
 const Navbar = () => {
   return (
     <div>
+      <div
+        className="offcanvas offcanvas-start"
+        data-bs-scroll="true"
+        tabIndex={-1}
+        id="offCanvas"
+        aria-labelledby="offCanvasLabel"
+      >
+        <SideBar />
+      </div>
+
       <nav className="navbar bg-secondary-subtle">
         <div className="container-fluid">
           {/* Side Menu Button */}
-          <button className="navbar-toggler" type="button">
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offCanvas"
+            aria-controls="offCanvas"
+          >
             <span className="navbar-toggler-icon" />
           </button>
 

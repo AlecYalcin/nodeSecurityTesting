@@ -1,4 +1,4 @@
-import RegisterImg from "../../../public/register-img.jpg";
+import RegisterImg from "../../assets/register-img.jpg";
 
 const Register = () => {
   return (
