@@ -40,7 +40,7 @@ const SideBar = () => {
           </li>
           <li className="mb-2">
             <a
-              href="/profile"
+              href="/profile/1"
               className="nav-link border border-primary text-primary bg-white"
             >
               <svg className="bi me-2" width="16" height="16">
