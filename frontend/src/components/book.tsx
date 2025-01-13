@@ -1,14 +1,31 @@
-const Book = ({ id }: { id: number }) => {
-  const idReturn = () => {
-    console.log(id);
-  };
-
-  idReturn();
+const Book = ({
+  id,
+  edit = false,
+  create = false,
+}: {
+  id: number;
+  edit: boolean;
+  create: boolean;
+}) => {
+  const admin = true;
 
   return (
     <div>
       <div className="container-fluid">
-        <div id="upperBook" className="d-flex p-5">
+        {admin ? (
+          <div className="d-flex w-25 justify-content-start px-5 mt-3">
+            <a className="btn btn-sm btn-info me-1" href={`/book/${id}/edit`}>
+              Edição
+            </a>
+            <a className="btn btn-sm btn-danger" href="">
+              Excluir
+            </a>
+          </div>
+        ) : (
+          <div></div>
+        )}
+
+        <div id="upperBook" className="d-flex px-5 mt-3">
           {/* Imagem */}
           <img
             className="me-4"
@@ -23,14 +40,18 @@ const Book = ({ id }: { id: number }) => {
               <label className="form-label fs-2" htmlFor="title">
                 Título
               </label>
-              <input id="title" className="form-control form-control-lg" />
+              <input
+                id="title"
+                className="form-control form-control-lg"
+                readOnly={!edit}
+              />
             </div>
             {/* Autor */}
             <div data-mdb-input-init className="form-outline mb-4">
               <label className="form-label fs-3" htmlFor="author">
                 Autor
               </label>
-              <input id="author" className="form-control" />
+              <input id="author" className="form-control" readOnly={!edit} />
             </div>
             {/* Descrição */}
             <div data-mdb-input-init className="form-outline mb-4">
@@ -41,10 +62,12 @@ const Book = ({ id }: { id: number }) => {
                 id="description"
                 className="form-control"
                 style={{ height: "12rem" }}
+                readOnly={!edit}
               />
             </div>
           </div>
         </div>
+
         <div id="bottomBook" className="container-fluid px-5">
           <div className="d-flex justify-content-between">
             <div className="d-flex">
@@ -58,25 +81,44 @@ const Book = ({ id }: { id: number }) => {
                 <label className="form-label fs-3" htmlFor="price">
                   Preço
                 </label>
-                <input id="price" className="form-control" />
+                <input id="price" className="form-control" readOnly={!edit} />
               </div>
             </div>
-            <div className="container d-flex justify-content-end w-100">
-              <div className="me-2">
-                <label className="form-label fs-5" htmlFor="quantity">
-                  Quantidade
-                </label>
-                <input id="quantity" type="number" className="form-control" />
-                <div className="d-flex">
-                  <p>x R$0.00 = </p>
-                  <span className="fs-4"> R$0.00</span>
+            {!edit ? (
+              <div className="container d-flex justify-content-end w-100">
+                <div className="me-2">
+                  <label className="form-label fs-5" htmlFor="quantity">
+                    Quantidade
+                  </label>
+                  <input
+                    id="quantity"
+                    type="number"
+                    className="form-control"
+                    readOnly={!edit}
+                  />
+                  <div className="d-flex">
+                    <p>x R$0.00 = </p>
+                    <span className="fs-4"> R$0.00</span>
+                  </div>
                 </div>
-              </div>
 
-              <button type="submit" className="btn btn-lg btn-success">
-                Compre Agora
-              </button>
-            </div>
+                <button type="submit" className="btn btn-lg btn-success">
+                  Compre Agora
+                </button>
+              </div>
+            ) : (
+              <div className="container d-flex justify-content-end w-100">
+                {create ? (
+                  <button type="submit" className="btn btn-lg btn-success">
+                    Criar
+                  </button>
+                ) : (
+                  <button type="submit" className="btn btn-lg btn-primary">
+                    Editar
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
