@@ -1,7 +1,5 @@
 import { useParams } from "react-router-dom";
-import Footer from "../../components/footer";
 import User from "../../components/user";
-import Navbar from "../../components/navbar";
 
 const PageProfileShow = () => {
   const { id } = useParams();
@@ -9,7 +7,6 @@ const PageProfileShow = () => {
 
   return (
     <div className="bg-body-tertiary">
-      <Navbar />
       <User edit={false} />
 
       <div className="container mt-2">
@@ -28,8 +25,6 @@ const PageProfileShow = () => {
           Excluir Conta
         </a>
       </div>
-
-      <Footer />
     </div>
   );
 };

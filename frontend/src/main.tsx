@@ -7,6 +7,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 // Pages
+import Navbar from "./components/navbar";
+import Footer from "./components/footer";
 import App from "./pages/business/app";
 import Login from "./pages/auth/login";
 import Register from "./pages/auth/register";
@@ -20,11 +22,11 @@ import PageProfileSearch from "./pages/profile/search";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    <Navbar />
     <Router>
       <Routes>
         {/* Business Routes */}
 
-        {/* FEITO */}
         <Route path="/" element={<App />} />
 
         <Route path="/payment/transfer" element={<h1>Transferência</h1>} />
@@ -50,5 +52,6 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/register" element={<Register />} />
       </Routes>
     </Router>
+    <Footer />
   </StrictMode>
 );

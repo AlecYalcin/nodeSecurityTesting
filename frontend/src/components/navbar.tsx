@@ -1,6 +1,8 @@
 import SideBar from "./side-bar";
 
 const Navbar = () => {
+  const isAuthenticated = true;
+
   return (
     <div>
       <div
@@ -40,14 +42,28 @@ const Navbar = () => {
           </form>
 
           {/* Profile/Auth Bar */}
-          <div className="d-flex justify-content-between">
-            <a className="btn btn-primary me-2" href="/login">
-              Login
-            </a>
-            <a className="btn btn-outline-primary" href="/register">
-              Registro
-            </a>
-          </div>
+          {!isAuthenticated ? (
+            <div className="d-flex justify-content-between">
+              <a className="btn btn-primary me-2" href="/login">
+                Login
+              </a>
+              <a className="btn btn-outline-primary" href="/register">
+                Registro
+              </a>
+            </div>
+          ) : (
+            <div className="d-flex justify-content-between">
+              <span className="me-1 fs-5 text-success">R$ 100</span>
+              <div className="border rounded-circle me-1">
+                <img
+                  src="https://dummyimage.com/30x30/000/fff&text=User"
+                  className="rounded-circle"
+                  alt="userimg"
+                />
+              </div>
+              <span className="mt-1 fs-6">Teste 01</span>
+            </div>
+          )}
         </div>
       </nav>
     </div>

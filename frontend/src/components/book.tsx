@@ -12,7 +12,7 @@ const Book = ({
   return (
     <div>
       <div className="container-fluid">
-        {admin ? (
+        {admin && !edit ? (
           <div className="d-flex w-25 justify-content-start px-5 mt-3">
             <a className="btn btn-sm btn-info me-1" href={`/book/${id}/edit`}>
               Edição
