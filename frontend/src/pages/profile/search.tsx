@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import Footer from "../../components/footer";
+import UserSearch from "../../components/user-search";
 import Navbar from "../../components/navbar";
 
 const PageProfileSearch = () => {
@@ -9,6 +10,7 @@ const PageProfileSearch = () => {
   return (
     <div className="bg-body-tertiary">
       <Navbar />
+      <UserSearch />
       <Footer />
     </div>
   );
