@@ -1,13 +1,45 @@
+import { FormEvent, useState } from "react";
+import { login } from "../../api/auth";
 import LoginImg from "../../assets/login-img.jpg";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const PageLogin = () => {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e: FormEvent) => {
+    e.preventDefault();
+
+    try {
+      // Realizando o Login com a Api
+      const data = await login(email, password);
+
+      // Verificando se a conexão obteve sucesso
+      if (data.token) {
+        // Adicionando Token ao Localstorage
+        localStorage.setItem("token", data.token);
+
+        // Redirecionar o Usuário Autenticado
+        navigate("/");
+
+        return;
+      }
+
+      alert("Usuário não encontrado.");
+    } catch (error) {
+      alert(error);
+    }
+  };
+
   return (
     <section className="vh-100">
       <div className="container-fluid">
         <div className="row">
           <div className="col-sm-6 text-black">
             <div className="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5">
-              <form className="container-fluid">
+              <form className="container-fluid" onSubmit={handleLogin}>
                 <h3
                   className="fw-normal mb-3 pb-3"
                   style={{ letterSpacing: "1px" }}
@@ -20,6 +52,7 @@ const Login = () => {
                     type="email"
                     id="form2Example18"
                     className="form-control form-control-lg"
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                   <label className="form-label" htmlFor="form2Example18">
                     Email
@@ -31,6 +64,7 @@ const Login = () => {
                     type="password"
                     id="form2Example28"
                     className="form-control form-control-lg"
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <label className="form-label" htmlFor="form2Example28">
                     Senha
@@ -39,10 +73,8 @@ const Login = () => {
 
                 <div className="pt-1 mb-4">
                   <button
-                    data-mdb-button-init
-                    data-mdb-ripple-init
                     className="btn btn-info btn-lg btn-block"
-                    type="button"
+                    type="submit"
                   >
                     Realizar Autenticação
                   </button>
@@ -71,4 +103,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default PageLogin;

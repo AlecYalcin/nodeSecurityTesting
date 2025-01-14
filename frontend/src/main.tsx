@@ -7,10 +7,10 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 // Pages
-import Navbar from "./components/navbar";
-import Footer from "./components/footer";
+// import Navbar from "./components/navbar";
+// import Footer from "./components/footer";
 import App from "./pages/business/app";
-import Login from "./pages/auth/login";
+import PageLogin from "./pages/auth/login";
 import Register from "./pages/auth/register";
 import Payment from "./pages/business/payment";
 import PageBookShow from "./pages/library/show";
@@ -25,7 +25,6 @@ import PagePaymentTransfer from "./pages/business/transfer";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Navbar />
     <Router>
       <Routes>
         {/* Business Routes */}
@@ -51,10 +50,9 @@ createRoot(document.getElementById("root")!).render(
 
         {/* Auth Routes */}
 
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<PageLogin />} />
         <Route path="/register" element={<Register />} />
       </Routes>
     </Router>
-    <Footer />
   </StrictMode>
 );

@@ -1,5 +1,6 @@
 // Packages
 import express from "express";
+import cors from "cors";
 
 // Modules
 import { createTables, connection_clear } from "./database/config/database";
@@ -22,6 +23,15 @@ const app = express();
 
 // Express com Json
 app.use(express.json());
+
+// Configuração de Headers
+app.use(
+  cors({
+    origin: "http://localhost:4000", // Permitir apenas essa origem
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Métodos permitidos
+    allowedHeaders: ["Content-Type", "Authorization"], // Cabeçalhos permitidos
+  })
+);
 
 // Rotas de Usuários
 app.use("/users", userRoutes);
