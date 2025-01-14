@@ -1,15 +1,15 @@
 import { useParams } from "react-router-dom";
-import UserHistory from "../../components/user-history";
+import PaymentSearch from "../../components/payment-search";
 
-const PageProfileHistory = () => {
+const PagePaymentSearch = () => {
   const { id } = useParams();
   console.log(id);
 
   return (
     <div className="bg-body-tertiary">
-      <UserHistory />
+      <PaymentSearch />
     </div>
   );
 };
 
-export default PageProfileHistory;
+export default PagePaymentSearch;

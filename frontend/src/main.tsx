@@ -12,13 +12,15 @@ import Footer from "./components/footer";
 import App from "./pages/business/app";
 import Login from "./pages/auth/login";
 import Register from "./pages/auth/register";
+import Payment from "./pages/business/payment";
 import PageBookShow from "./pages/library/show";
 import PageBookEdit from "./pages/library/edit";
 import PageBookCreate from "./pages/library/create";
 import PageProfileShow from "./pages/profile/show";
 import PageProfileEdit from "./pages/profile/edit";
-import PageProfileHistory from "./pages/profile/history";
 import PageProfileSearch from "./pages/profile/search";
+import PageProfileHistory from "./pages/profile/history";
+import PagePaymentSearch from "./pages/business/search";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -28,16 +30,16 @@ createRoot(document.getElementById("root")!).render(
         {/* Business Routes */}
 
         <Route path="/" element={<App />} />
-
         <Route path="/payment/transfer" element={<h1>Transferência</h1>} />
-        <Route path="/payment/:id" element={<h1>Pagamentos X</h1>} />
-        <Route path="/payment/search" element={<h1>Pesquisar Pagamento</h1>} />
+        <Route path="/payment/:id" element={<Payment />} />
+        <Route path="/payment/search" element={<PagePaymentSearch />} />
 
         {/* Library Routes */}
 
         <Route path="/book/:id" element={<PageBookShow />} />
         <Route path="/book/:id/edit" element={<PageBookEdit />} />
         <Route path="/book/create" element={<PageBookCreate />} />
+        <Route path="/book/search" element={<h1>Página de Busca</h1>} />
 
         {/* Profile Routes */}
 

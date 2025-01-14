@@ -54,13 +54,7 @@ const Navbar = () => {
           ) : (
             <div className="d-flex justify-content-between">
               <span className="me-1 fs-5 text-success">R$ 100</span>
-              <div className="border rounded-circle me-1">
-                <img
-                  src="https://dummyimage.com/30x30/000/fff&text=User"
-                  className="rounded-circle"
-                  alt="userimg"
-                />
-              </div>
+              <span className="border-end border-primary mx-2"></span>
               <span className="mt-1 fs-6">Teste 01</span>
             </div>
           )}
