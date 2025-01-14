@@ -15,6 +15,11 @@ const PageProfileShow = () => {
           Acessar Histórico de Compra
         </a>
 
+        {/* Realizar Transferência Bancária */}
+        <a className="btn btn-md btn-warning me-2" href="/payment/transfer">
+          Transferência Bancária
+        </a>
+
         {/* Editar Conta */}
         <a className="btn btn-md btn-primary me-2" href="/profile/1/edit">
           Editar Conta

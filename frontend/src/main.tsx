@@ -21,6 +21,7 @@ import PageProfileEdit from "./pages/profile/edit";
 import PageProfileSearch from "./pages/profile/search";
 import PageProfileHistory from "./pages/profile/history";
 import PagePaymentSearch from "./pages/business/search";
+import PagePaymentTransfer from "./pages/business/transfer";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -30,7 +31,7 @@ createRoot(document.getElementById("root")!).render(
         {/* Business Routes */}
 
         <Route path="/" element={<App />} />
-        <Route path="/payment/transfer" element={<h1>Transferência</h1>} />
+        <Route path="/payment/transfer" element={<PagePaymentTransfer />} />
         <Route path="/payment/:id" element={<Payment />} />
         <Route path="/payment/search" element={<PagePaymentSearch />} />
 
