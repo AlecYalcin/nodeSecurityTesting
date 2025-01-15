@@ -25,13 +25,7 @@ const app = express();
 app.use(express.json());
 
 // Configuração de Headers
-app.use(
-  cors({
-    origin: "http://localhost:4000", // Permitir apenas essa origem
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Métodos permitidos
-    allowedHeaders: ["Content-Type", "Authorization"], // Cabeçalhos permitidos
-  })
-);
+app.use(cors());
 
 app.options("*", cors());
 

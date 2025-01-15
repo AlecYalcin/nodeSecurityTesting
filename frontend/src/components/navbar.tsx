@@ -7,6 +7,7 @@ import { getUser } from "../api/auth";
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [user, setUser] = useState({ id: 0, name: "", bank: 0 });
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const navigate = useNavigate();
 
@@ -31,6 +32,8 @@ const Navbar = () => {
         name: data.name,
         bank: data.bank,
       });
+
+      if (data.isAdmin) setIsAdmin(true);
     };
 
     fetchUser();
@@ -45,7 +48,7 @@ const Navbar = () => {
         id="offCanvas"
         aria-labelledby="offCanvasLabel"
       >
-        <SideBar />
+        <SideBar id={user.id} admin={isAdmin} />
       </div>
 
       <nav className="navbar bg-secondary-subtle">
