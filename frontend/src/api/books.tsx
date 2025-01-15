@@ -12,3 +12,16 @@ export const searchBooks = async (query: string) => {
   const data = await response.json();
   return data;
 };
+
+export const retrieveBook = async (id: number) => {
+  const response = await fetch(`${API_URL}/books/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}}`,
+    },
+  });
+
+  const data = await response.json();
+  return data;
+};

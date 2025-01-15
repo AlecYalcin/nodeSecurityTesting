@@ -1,9 +1,15 @@
 const Book = ({
-  id,
+  book = null,
   edit = false,
   create = false,
 }: {
-  id: number;
+  book: {
+    id: number;
+    title: string;
+    author: string;
+    price: number;
+    stock: number;
+  } | null;
   edit: boolean;
   create: boolean;
 }) => {
@@ -14,7 +20,10 @@ const Book = ({
       <div className="container-fluid">
         {admin && !edit ? (
           <div className="d-flex w-25 justify-content-start px-5 mt-3">
-            <a className="btn btn-sm btn-info me-1" href={`/book/${id}/edit`}>
+            <a
+              className="btn btn-sm btn-info me-1"
+              href={`/book/${book?.id}/edit`}
+            >
               Edição
             </a>
             <a className="btn btn-sm btn-danger" href="">
@@ -44,6 +53,7 @@ const Book = ({
                 id="title"
                 className="form-control form-control-lg"
                 readOnly={!edit}
+                value={book?.title}
               />
             </div>
             {/* Autor */}
@@ -51,18 +61,11 @@ const Book = ({
               <label className="form-label fs-3" htmlFor="author">
                 Autor
               </label>
-              <input id="author" className="form-control" readOnly={!edit} />
-            </div>
-            {/* Descrição */}
-            <div data-mdb-input-init className="form-outline mb-4">
-              <label className="form-label fs-3" htmlFor="description">
-                Descrição
-              </label>
-              <textarea
-                id="description"
+              <input
+                id="author"
                 className="form-control"
-                style={{ height: "12rem" }}
                 readOnly={!edit}
+                value={book?.author}
               />
             </div>
           </div>
@@ -75,13 +78,22 @@ const Book = ({
                 <label className="form-label fs-3" htmlFor="stock">
                   Estoque
                 </label>
-                <input id="stock" className="form-control" />
+                <input
+                  id="stock"
+                  className="form-control"
+                  value={book?.stock}
+                />
               </div>
               <div data-mdb-input-init className="form-outline mb-4">
                 <label className="form-label fs-3" htmlFor="price">
                   Preço
                 </label>
-                <input id="price" className="form-control" readOnly={!edit} />
+                <input
+                  id="price"
+                  className="form-control"
+                  readOnly={!edit}
+                  value={book?.price}
+                />
               </div>
             </div>
             {!edit ? (
