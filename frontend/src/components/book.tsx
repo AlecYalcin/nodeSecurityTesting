@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const Book = ({
   book = null,
   edit = false,
@@ -13,6 +15,32 @@ const Book = ({
   edit: boolean;
   create: boolean;
 }) => {
+  // Livro Dummy para Create
+
+  // Objeto do Livro
+  const [currentBook, setCurrentBook] = useState(
+    book || {
+      id: 0,
+      title: "",
+      author: "",
+      price: 0,
+      stock: 0,
+    }
+  );
+
+  const handleBookChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    // Atualiza o estado de forma imutável
+    setCurrentBook((prevState) => ({
+      ...prevState, // Copia os outros atributos
+      [name]: value, // Atualiza o atributo específico
+    }));
+  };
+
+  // Quantidade de Compras
+  const [quantity, setQuantity] = useState(0);
+
   const admin = true;
 
   return (
@@ -22,7 +50,7 @@ const Book = ({
           <div className="d-flex w-25 justify-content-start px-5 mt-3">
             <a
               className="btn btn-sm btn-info me-1"
-              href={`/book/${book?.id}/edit`}
+              href={`/book/${currentBook.id}/edit`}
             >
               Edição
             </a>
@@ -51,9 +79,11 @@ const Book = ({
               </label>
               <input
                 id="title"
+                name="title"
                 className="form-control form-control-lg"
                 readOnly={!edit}
-                value={book?.title}
+                value={currentBook.title}
+                onChange={handleBookChange}
               />
             </div>
             {/* Autor */}
@@ -63,9 +93,11 @@ const Book = ({
               </label>
               <input
                 id="author"
+                name="author"
                 className="form-control"
                 readOnly={!edit}
-                value={book?.author}
+                value={currentBook.author}
+                onChange={handleBookChange}
               />
             </div>
           </div>
@@ -80,8 +112,13 @@ const Book = ({
                 </label>
                 <input
                   id="stock"
+                  name="stock"
+                  type="number"
+                  min="0"
+                  readOnly={!edit}
                   className="form-control"
-                  value={book?.stock}
+                  value={currentBook.stock}
+                  onChange={handleBookChange}
                 />
               </div>
               <div data-mdb-input-init className="form-outline mb-4">
@@ -90,9 +127,13 @@ const Book = ({
                 </label>
                 <input
                   id="price"
+                  name="price"
+                  type="number"
+                  min="0"
                   className="form-control"
                   readOnly={!edit}
-                  value={book?.price}
+                  value={currentBook.price}
+                  onChange={handleBookChange}
                 />
               </div>
             </div>
@@ -104,13 +145,18 @@ const Book = ({
                   </label>
                   <input
                     id="quantity"
+                    name="quantity"
                     type="number"
+                    min={0}
+                    max={currentBook.stock}
                     className="form-control"
-                    readOnly={!edit}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
                   />
                   <div className="d-flex">
-                    <p>x R$0.00 = </p>
-                    <span className="fs-4"> R$0.00</span>
+                    <p>x R${currentBook.price} = </p>
+                    <span className="fs-4">
+                      R$ {quantity * currentBook.price}
+                    </span>
                   </div>
                 </div>
 

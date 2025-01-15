@@ -25,12 +25,16 @@ class BookController {
       const book = await Book.retrieve({ id: id });
 
       if (!book) {
-        return res.status(404).json({ message: "Livro não encontrado." });
+        return res
+          .status(404)
+          .json({ message: "Livro não encontrado.", error: true });
       }
 
       return res.status(200).json(book);
     } catch (error) {
-      return res.status(400).json({ message: "Erro ao procurar livro." });
+      return res
+        .status(400)
+        .json({ message: "Erro ao procurar livro.", error: true });
     }
   };
 

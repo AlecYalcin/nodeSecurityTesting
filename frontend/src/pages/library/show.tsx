@@ -27,7 +27,12 @@ const PageBookShow = ({
     if (book == null) fetchBook();
   }, [id, book]);
 
-  if (loading) return <h1>Carregando...</h1>;
+  if (loading) return <h1 className="text-center">Carregando...</h1>;
+
+  if (book?.id === undefined)
+    return <h1 className="text-center">Nenhum livro encontrado.</h1>;
+
+  // console.log(book);
 
   return (
     <div className="bg-body-tertiary">
