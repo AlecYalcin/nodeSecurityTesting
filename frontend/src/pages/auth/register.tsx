@@ -21,6 +21,7 @@ const Register = () => {
       if (data.token) {
         // Adicionando Token ao Localstorage
         localStorage.setItem("token", data.token);
+        localStorage.setItem("id", data.id);
 
         // Redirecionar o Usuário Autenticado
         navigate("/");

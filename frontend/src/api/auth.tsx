@@ -29,3 +29,16 @@ export const register = async (
   const data = await response.json();
   return data;
 };
+
+export const getUser = async (id: number) => {
+  const response = await fetch(`${API_URL}/users/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+  const data = await response.json();
+  return data;
+};

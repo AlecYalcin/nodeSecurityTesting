@@ -1,9 +1,13 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import SideBar from "./side-bar";
 import { useNavigate } from "react-router-dom";
+import { getStorage } from "../api/env-config";
+import { getUser } from "../api/auth";
 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [user, setUser] = useState({ id: 0, name: "", bank: 0 });
+
   const navigate = useNavigate();
 
   const handleSearch = (e: FormEvent) => {
@@ -15,7 +19,22 @@ const Navbar = () => {
     }
   };
 
-  const isAuthenticated = true;
+  // Pegando Token e Id
+  const { token, id } = getStorage();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const data = await getUser(Number(id));
+
+      setUser({
+        id: data.id,
+        name: data.name,
+        bank: data.bank,
+      });
+    };
+
+    fetchUser();
+  }, [token, id]);
 
   return (
     <div>
@@ -60,7 +79,7 @@ const Navbar = () => {
           </form>
 
           {/* Profile/Auth Bar */}
-          {!isAuthenticated ? (
+          {user.id === 0 ? (
             <div className="d-flex justify-content-between">
               <a className="btn btn-primary me-2" href="/login">
                 Login
@@ -71,9 +90,11 @@ const Navbar = () => {
             </div>
           ) : (
             <div className="d-flex justify-content-between">
-              <span className="me-1 fs-5 text-success">R$ 100</span>
+              <span className="mt-1 fs-5">Usuário: {user.name}</span>
               <span className="border-end border-primary mx-2"></span>
-              <span className="mt-1 fs-6">Teste 01</span>
+              <span className="me-1 fs-5 text-success">
+                Banco: R${user.bank}
+              </span>
             </div>
           )}
         </div>

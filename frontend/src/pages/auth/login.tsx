@@ -20,6 +20,7 @@ const PageLogin = () => {
       if (data.token) {
         // Adicionando Token ao Localstorage
         localStorage.setItem("token", data.token);
+        localStorage.setItem("id", data.id);
 
         // Redirecionar o Usuário Autenticado
         navigate("/");
@@ -29,6 +30,7 @@ const PageLogin = () => {
 
       alert("Usuário não encontrado.");
     } catch (error) {
+      console.log(error);
       alert(error);
     }
   };

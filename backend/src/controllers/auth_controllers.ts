@@ -41,7 +41,9 @@ class AuthController {
         }
       );
 
-      return res.status(200).json({ message: "Autenticado.", token: token });
+      return res
+        .status(200)
+        .json({ message: "Autenticado.", token: token, id: user.id });
     } catch (error) {
       return res.status(400).json({
         message: error,
@@ -79,6 +81,7 @@ class AuthController {
       return res.status(201).json({
         message: "Sucesso ao criar usuário!",
         token: token,
+        id: user.id,
       });
     } catch (error) {
       return res.status(400).json({ message: error });

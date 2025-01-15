@@ -28,10 +28,12 @@ app.use(express.json());
 app.use(
   cors({
     origin: "http://localhost:4000", // Permitir apenas essa origem
-    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"], // Métodos permitidos
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Métodos permitidos
     allowedHeaders: ["Content-Type", "Authorization"], // Cabeçalhos permitidos
   })
 );
+
+app.options("*", cors());
 
 // Rotas de Usuários
 app.use("/users", userRoutes);
