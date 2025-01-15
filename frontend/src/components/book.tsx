@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+import { createBook, updateBook } from "../api/books";
+import { useNavigate } from "react-router-dom";
 
 const Book = ({
   book = null,
@@ -15,7 +17,7 @@ const Book = ({
   edit: boolean;
   create: boolean;
 }) => {
-  // Livro Dummy para Create
+  const navigate = useNavigate();
 
   // Objeto do Livro
   const [currentBook, setCurrentBook] = useState(
@@ -41,11 +43,38 @@ const Book = ({
   // Quantidade de Compras
   const [quantity, setQuantity] = useState(0);
 
+  // Lidando com a alteração do formulário
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    // Erro de Página/Permissão
+    if (!edit && !create) {
+      alert("Não é possível realizar essa ação nessa página.");
+      return;
+    }
+
+    // Para Edit
+    if (edit && !create) {
+      const data = await updateBook(currentBook);
+      if (data.error) alert(data);
+      else navigate(`/book/${currentBook.id}`);
+    }
+
+    // Para Create
+    if (create) {
+      const data = await createBook(currentBook);
+      if (data.error) alert(data);
+      else navigate(`/book/search?query=${currentBook.title}`);
+    }
+
+    return;
+  };
+
   const admin = true;
 
   return (
     <div>
-      <div className="container-fluid">
+      <form className="container-fluid" onSubmit={handleSubmit}>
         {admin && !edit ? (
           <div className="d-flex w-25 justify-content-start px-5 mt-3">
             <a
@@ -130,6 +159,7 @@ const Book = ({
                   name="price"
                   type="number"
                   min="0"
+                  step="0.01"
                   className="form-control"
                   readOnly={!edit}
                   value={currentBook.price}
@@ -179,7 +209,7 @@ const Book = ({
             )}
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

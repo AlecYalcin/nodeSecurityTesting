@@ -6,14 +6,18 @@ class BookController {
   createBook = async (req: any, res: any) => {
     // ERRO 403: Não-admins não autorizados.
     if (!res.locals.user.isAdmin) {
-      return res.status(403).json({ message: "Usuário não autorizado." });
+      return res
+        .status(403)
+        .json({ message: "Usuário não autorizado.", error: true });
     }
 
     try {
       await Book.create(req.body);
       return res.status(201).json({ message: "Sucesso ao criar o livro." });
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao criar o livro." });
+      return res
+        .status(400)
+        .json({ message: "Falha ao criar o livro.", error: true });
     }
   };
 
@@ -63,7 +67,7 @@ class BookController {
     } catch (error) {
       return res
         .status(404)
-        .json({ message: "Falha ao buscar o livro.", error: error });
+        .json({ message: "Falha ao buscar o livro.", error: true });
     }
   };
 
@@ -93,7 +97,9 @@ class BookController {
 
     // ERRO 403: Não-admins não autorizados.
     if (!res.locals.user.isAdmin) {
-      return res.status(403).json({ message: "Usuário não autorizado." });
+      return res
+        .status(403)
+        .json({ message: "Usuário não autorizado.", error: true });
     }
 
     try {
@@ -101,7 +107,9 @@ class BookController {
 
       return res.status(200).json({ message: "Livro excluído com sucesso!" });
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao excluir Livro." });
+      return res
+        .status(400)
+        .json({ message: "Falha ao excluir Livro.", error: true });
     }
   };
 }

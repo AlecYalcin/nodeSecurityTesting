@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "http://localhost:4000", // Permitir apenas essa origem
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Métodos permitidos
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"], // Métodos permitidos
     allowedHeaders: ["Content-Type", "Authorization"], // Cabeçalhos permitidos
   })
 );
