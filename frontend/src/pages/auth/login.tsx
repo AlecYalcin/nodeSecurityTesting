@@ -1,7 +1,7 @@
 import { FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { login } from "../../api/auth";
 import LoginImg from "../../assets/login-img.jpg";
-import { useNavigate } from "react-router-dom";
 
 const PageLogin = () => {
   const navigate = useNavigate();

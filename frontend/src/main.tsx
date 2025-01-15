@@ -22,6 +22,7 @@ import PageProfileHistory from "./pages/profile/history";
 import PagePaymentSearch from "./pages/business/search";
 import PagePaymentTransfer from "./pages/business/transfer";
 import MainLayout from "./pages/main-layout";
+import PageLibrarySearch from "./pages/library/search";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -92,7 +93,7 @@ createRoot(document.getElementById("root")!).render(
           path="/book/search"
           element={
             <MainLayout>
-              <h1>Página de Busca</h1>
+              <PageLibrarySearch />
             </MainLayout>
           }
         />
