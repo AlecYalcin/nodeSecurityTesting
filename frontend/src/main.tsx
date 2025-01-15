@@ -21,120 +21,122 @@ import PageProfileSearch from "./pages/profile/search";
 import PageProfileHistory from "./pages/profile/history";
 import PagePaymentSearch from "./pages/business/search";
 import PagePaymentTransfer from "./pages/business/transfer";
-import MainLayout from "./pages/main-layout";
+import Layout from "./pages/main-layout";
 import PageLibrarySearch from "./pages/library/search";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Router>
+      {/* Business Routes */}
       <Routes>
-        {/* Business Routes */}
-
         <Route
           path="/"
           element={
-            <MainLayout>
+            <Layout>
               <App />
-            </MainLayout>
+            </Layout>
           }
         />
         <Route
           path="/payment/transfer"
           element={
-            <MainLayout>
+            <Layout>
               <PagePaymentTransfer />
-            </MainLayout>
+            </Layout>
           }
         />
         <Route
           path="/payment/:id"
           element={
-            <MainLayout>
+            <Layout>
               <Payment />
-            </MainLayout>
+            </Layout>
           }
         />
         <Route
           path="/payment/search"
           element={
-            <MainLayout>
+            <Layout>
               <PagePaymentSearch />
-            </MainLayout>
+            </Layout>
           }
         />
+      </Routes>
 
-        {/* Library Routes */}
-
+      {/* Library Routes */}
+      <Routes>
         <Route
           path="/book/:id"
           element={
-            <MainLayout>
+            <Layout>
               <PageBookShow />
-            </MainLayout>
+            </Layout>
           }
         />
         <Route
           path="/book/:id/edit"
           element={
-            <MainLayout>
+            <Layout>
               <PageBookEdit />
-            </MainLayout>
+            </Layout>
           }
         />
         <Route
           path="/book/create"
           element={
-            <MainLayout>
+            <Layout>
               <PageBookCreate />
-            </MainLayout>
+            </Layout>
           }
         />
         <Route
           path="/book/search"
           element={
-            <MainLayout>
+            <Layout>
               <PageLibrarySearch />
-            </MainLayout>
+            </Layout>
           }
         />
+      </Routes>
 
-        {/* Profile Routes */}
-
+      {/* Profile Routes */}
+      <Routes>
         <Route
           path="/profile/:id"
           element={
-            <MainLayout>
+            <Layout>
               <PageProfileShow />
-            </MainLayout>
+            </Layout>
           }
         />
         <Route
           path="/profile/:id/edit"
           element={
-            <MainLayout>
+            <Layout>
               <PageProfileEdit />
-            </MainLayout>
+            </Layout>
           }
         />
         <Route
           path="/profile/:id/history"
           element={
-            <MainLayout>
+            <Layout>
               <PageProfileHistory />
-            </MainLayout>
+            </Layout>
           }
         />
         <Route
           path="/profile/search"
           element={
-            <MainLayout>
+            <Layout>
               <PageProfileSearch />
-            </MainLayout>
+            </Layout>
           }
         />
+      </Routes>
 
-        {/* Auth Routes */}
-
+      {/* Auth Routes */}
+      <Routes>
         <Route path="/login" element={<PageLogin />} />
         <Route path="/register" element={<Register />} />
       </Routes>
