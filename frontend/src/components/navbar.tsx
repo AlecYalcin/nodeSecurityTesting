@@ -1,6 +1,20 @@
+import { FormEvent, useState } from "react";
 import SideBar from "./side-bar";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e: FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/book/search?query=${encodeURIComponent(searchQuery)}`, {
+        replace: true,
+      });
+    }
+  };
+
   const isAuthenticated = true;
 
   return (
@@ -29,12 +43,16 @@ const Navbar = () => {
           </button>
 
           {/* Search Book Bar */}
-          <form className="d-flex justify-content-between">
+          <form
+            className="d-flex justify-content-between"
+            onSubmit={handleSearch}
+          >
             <input
               className="form-control col-4 me-2"
               type="search"
               placeholder="Pesquise por Algum Livro!"
-              aria-label="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
             <button className="btn btn-outline-success" type="submit">
               Procure
