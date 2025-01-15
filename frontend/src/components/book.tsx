@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { createBook, updateBook } from "../api/books";
+import { buyBook, createBook, updateBook } from "../api/books";
 import { useNavigate } from "react-router-dom";
 
 const Book = ({
@@ -47,9 +47,11 @@ const Book = ({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    // Erro de Página/Permissão
+    // Para Compra
     if (!edit && !create) {
-      alert("Não é possível realizar essa ação nessa página.");
+      const data = await buyBook(currentBook.id, quantity);
+      if (data.error) alert(data);
+      else navigate(`/`);
       return;
     }
 

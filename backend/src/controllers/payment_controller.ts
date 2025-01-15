@@ -15,7 +15,9 @@ class PaymentController {
 
       // ERRO 403: Token não autorizado.
       if (res.locals.user.id != user_id && !res.locals.user.isAdmin) {
-        return res.status(404).json({ message: "Usuário não autorizado." });
+        return res
+          .status(404)
+          .json({ message: "Usuário não autorizado.", error: true });
       }
 
       // Verificar se o LIVRO existe
@@ -25,12 +27,16 @@ class PaymentController {
 
       // ERRO 400: Verificar se a QUANTIDADE é POSSÍVEL
       if (book.stock < quantity) {
-        return res.status(400).json({ message: "Livros indisponíveis." });
+        return res
+          .status(400)
+          .json({ message: "Livros indisponíveis.", error: true });
       }
 
       // ERRO 400: Verificar se o USUÁRIO CONSEGUE PAGAR
       if (user.bank < price) {
-        return res.status(400).json({ message: "Saldo insuficiente." });
+        return res
+          .status(400)
+          .json({ message: "Saldo insuficiente.", error: true });
       }
 
       // Realizando o Pagamento
@@ -55,9 +61,7 @@ class PaymentController {
 
       return res.status(201).json({ message: "Sucesso ao criar pagamento!" });
     } catch (error) {
-      return res
-        .status(400)
-        .json({ message: "Falha ao criar pagamento.", error: error });
+      return res.status(400).json({ message: error, error: true });
     }
   };
 

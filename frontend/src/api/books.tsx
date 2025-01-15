@@ -1,4 +1,4 @@
-import { API_URL } from "./env-config";
+import { API_URL, getStorage } from "./env-config";
 
 export const searchBooks = async (query: string) => {
   const response = await fetch(`${API_URL}/books/search?title=${query}`, {
@@ -60,6 +60,26 @@ export const createBook = async (book: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     body: JSON.stringify(book),
+  });
+
+  const data = await response.json();
+  return data;
+};
+
+export const buyBook = async (book_id: number, quantity: number) => {
+  const { token, id } = getStorage();
+
+  const response = await fetch(`${API_URL}/payments/create`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      user_id: id,
+      book_id: book_id,
+      quantity: quantity,
+    }),
   });
 
   const data = await response.json();
