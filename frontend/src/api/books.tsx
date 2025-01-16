@@ -13,6 +13,33 @@ export const searchBooks = async (query: string) => {
   return data;
 };
 
+export const listBooks = async ({
+  recent = false,
+  price = false,
+  stock = false,
+}: {
+  recent: boolean;
+  price: boolean;
+  stock: boolean;
+}) => {
+  let query = "";
+
+  if (recent) query += "recent=true&";
+  if (price) query += "lower=100&";
+  if (stock) query += "stock=20&";
+
+  const response = await fetch(`${API_URL}/books/search?${query}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}}`,
+    },
+  });
+
+  const data = await response.json();
+  return data;
+};
+
 export const retrieveBook = async (id: number) => {
   const response = await fetch(`${API_URL}/books/${id}`, {
     method: "GET",
@@ -85,3 +112,11 @@ export const buyBook = async (book_id: number, quantity: number) => {
   const data = await response.json();
   return data;
 };
+
+export interface bookInterface {
+  id: number;
+  title: string;
+  author: string;
+  price: number;
+  stock: number;
+}

@@ -6,7 +6,7 @@ const BookCard = ({
     title: string;
     author: string;
     price: number;
-    quantity: number;
+    stock: number;
   };
 }) => {
   return (
@@ -20,12 +20,17 @@ const BookCard = ({
           />
           <div className="card-body d-flex flex-column align-items-center">
             <div>
-              <h5 className="fs-3 mb-1">{book.title}</h5>
+              <h5
+                className="fs-4 mb-1 text-truncate"
+                style={{ maxWidth: "200px", whiteSpace: "nowrap" }}
+              >
+                {book.title}
+              </h5>
               <h6 className="fs-6 text-secondary">{book.author}</h6>
             </div>
             <div>
               <p className="fs-4 mb-0 text-success">R${book.price}</p>
-              <p className="fs-6 mt-0 text-danger">{book.quantity} unidades</p>
+              <p className="fs-6 mt-0 text-danger">{book.stock} unidades</p>
             </div>
           </div>
         </div>
