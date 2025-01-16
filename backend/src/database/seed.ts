@@ -1,6 +1,7 @@
 // Models
 import User from "./models/users";
 import Book from "./models/books";
+import Payment from "./models/payments";
 
 // Criando Usuários
 export const userSeed = async () => {
@@ -53,12 +54,31 @@ export const bookSeed = async () => {
   });
 };
 
-const seeder = async () => {
-  const buffer = [userSeed, bookSeed];
+const exclude = async () => {
+  const excludeBuffer = [
+    Payment.truncateTable,
+    User.truncateTable,
+    Book.truncateTable,
+  ];
 
-  buffer.forEach(async (seed) => {
+  // Excluding...
+  excludeBuffer.forEach(async (seed) => {
     await seed();
   });
 };
 
-export default seeder;
+const seeder = async () => {
+  const seedBuffer = [userSeed, bookSeed];
+
+  // Seeding...
+  seedBuffer.forEach(async (seed) => {
+    await seed();
+  });
+};
+
+const excludeAndSeed = async () => {
+  await exclude();
+  await seeder();
+};
+
+export default excludeAndSeed;

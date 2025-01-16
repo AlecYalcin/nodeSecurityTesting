@@ -61,6 +61,22 @@ class Payment {
     });
   }
 
+  static async truncateTable(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `
+        TRUNCATE TABLE payments;
+      `,
+        (error) => {
+          reject(error);
+        }
+      );
+
+      console.log("Tabela de Pagamentos limpa!");
+      resolve();
+    });
+  }
+
   static create = async (
     payment: PaymentAttribute
   ): Promise<PaymentAttribute> => {

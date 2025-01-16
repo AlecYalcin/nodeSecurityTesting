@@ -63,6 +63,24 @@ class Book {
     });
   }
 
+  static async truncateTable(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `
+        SET FOREIGN_KEY_CHECKS = 0;
+        TRUNCATE TABLE books;
+        SET FOREIGN_KEY_CHECKS = 1;
+      `,
+        (error) => {
+          reject(error);
+        }
+      );
+
+      console.log("Tabela de Livros limpa!");
+      resolve();
+    });
+  }
+
   static create = async (book: BookAttribute): Promise<BookAttribute> => {
     // Adicionando a base de dados
     return new Promise((resolve, reject) => {

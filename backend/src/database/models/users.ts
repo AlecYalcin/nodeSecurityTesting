@@ -60,6 +60,24 @@ class User {
     });
   }
 
+  static async truncateTable(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `
+        SET FOREIGN_KEY_CHECKS = 0;
+        TRUNCATE TABLE users;
+        SET FOREIGN_KEY_CHECKS = 1;
+      `,
+        (error) => {
+          reject(error);
+        }
+      );
+
+      console.log("Tabela de Usuários limpa!");
+      resolve();
+    });
+  }
+
   static create = async (user: UserAttribute): Promise<UserAttribute> => {
     // Adicionando a base de dados
     return new Promise((resolve, reject) => {
