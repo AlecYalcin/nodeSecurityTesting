@@ -12,7 +12,7 @@ const PaymentSearch = () => {
     setLoading(true);
 
     try {
-      const data = await paymentsList(Number(search));
+      const data = await paymentsList(null, Number(search));
 
       if (data.error) {
         alert(data.message);

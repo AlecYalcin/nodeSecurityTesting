@@ -1,10 +1,17 @@
 import { API_URL } from "./env-config";
 
-export const paymentsList = async (id: number | null = null) => {
+export const paymentsList = async (
+  user_id: number | null = null,
+  id: number | null = null
+) => {
   let querySearch = `${API_URL}/payments/list`;
 
+  if (user_id !== null) {
+    querySearch += `?user_id=${user_id}&`;
+  }
+
   if (id !== null) {
-    querySearch += `?user_id=${id}`;
+    querySearch += `?id=${id}&`;
   }
 
   const response = await fetch(querySearch, {
