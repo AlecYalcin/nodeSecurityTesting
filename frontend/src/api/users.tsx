@@ -37,6 +37,7 @@ export const searchUser = async (query: string) => {
   });
 
   const data = await response.json();
+
   return data;
 };
 

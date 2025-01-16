@@ -9,6 +9,7 @@ const UserSearch = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
     setLoading(true);
 
     try {
@@ -52,11 +53,12 @@ const UserSearch = () => {
       {/* Resultados da Pesquisa */}
       {!loading ? (
         <div className="container-fluid">
-          {result!.map((r) => {
+          {result!.map((r, index) => {
             return (
               <a
                 className="mb-1 text-decoration-none"
                 href={`/profile/${r.id}`}
+                key={index}
               >
                 <UserCard user={r} />
               </a>
