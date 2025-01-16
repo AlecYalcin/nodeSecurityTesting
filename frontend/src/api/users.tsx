@@ -27,6 +27,19 @@ export const updateUser = async (user: userInterface) => {
   return data;
 };
 
+export const searchUser = async (query: string) => {
+  const response = await fetch(`${API_URL}/users/search?name=${query}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+  const data = await response.json();
+  return data;
+};
+
 export interface userInterface {
   id: number;
   name: string;

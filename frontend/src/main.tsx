@@ -11,7 +11,6 @@ import { createRoot } from "react-dom/client";
 import App from "./pages/business/app";
 import PageLogin from "./pages/auth/login";
 import Register from "./pages/auth/register";
-import Payment from "./pages/business/payment";
 import PageBookShow from "./pages/library/show";
 import PageBookEdit from "./pages/library/edit";
 import PageBookCreate from "./pages/library/create";
@@ -42,14 +41,6 @@ createRoot(document.getElementById("root")!).render(
           element={
             <Layout>
               <PagePaymentTransfer />
-            </Layout>
-          }
-        />
-        <Route
-          path="/payment/:id"
-          element={
-            <Layout>
-              <Payment />
             </Layout>
           }
         />
