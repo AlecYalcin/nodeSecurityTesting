@@ -1,22 +1,45 @@
+import { FormEvent, useState } from "react";
+import { paymentInterface, paymentsList } from "../api/payments";
 import PaymentCard from "./payment-card";
 
 const PaymentSearch = () => {
-  const result = [
-    { id: 1, user_id: 1, book_id: 1, total_price: 100, quantity: 20 },
-    { id: 2, user_id: 1, book_id: 2, total_price: 298, quantity: 78 },
-    { id: 3, user_id: 1, book_id: 3, total_price: 34, quantity: 2 },
-  ];
+  const [result, setResult] = useState<paymentInterface[]>([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const data = await paymentsList(Number(search));
+
+      if (data.error) {
+        alert(data.message);
+      } else {
+        setResult(data);
+        setLoading(false);
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   return (
     <div className="container mt-1 py-4 py-1">
       {/* Barra de Pesquisa */}
       <div className="container-fluid">
-        <form className="d-flex justify-content-between">
+        <form
+          className="d-flex justify-content-between"
+          onSubmit={handleSubmit}
+        >
           <input
             className="form-control me-2"
             type="search"
             placeholder="Pesquise o id de algum pagamento."
             aria-label="Search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
           <button className="btn btn-outline-success" type="submit">
             Pesquisar
@@ -29,13 +52,21 @@ const PaymentSearch = () => {
 
       {/* Resultados da Pesquisa */}
       <div className="container-fluid">
-        {result.map((payment) => {
-          return (
-            <div className="mb-2">
-              <PaymentCard payment={payment} />
-            </div>
-          );
-        })}
+        {!loading ? (
+          <div className="container-fluid">
+            {result!.map((r, index) => {
+              return (
+                <div className="p-1" key={index}>
+                  <PaymentCard payment={r} />
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <h1 className="container-fluid text-center">
+            Carregando Resultados...
+          </h1>
+        )}
       </div>
     </div>
   );
