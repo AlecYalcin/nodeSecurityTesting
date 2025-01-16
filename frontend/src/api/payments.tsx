@@ -19,6 +19,24 @@ export const paymentsList = async (id: number | null = null) => {
   return data;
 };
 
+export const paymentTransfer = async (
+  user_id: number,
+  target_id: number,
+  total: number
+) => {
+  const response = await fetch(`${API_URL}/payments/transfer`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({ user_id, target_id, total }),
+  });
+
+  const data = await response.json();
+  return data;
+};
+
 export interface paymentInterface {
   id: number;
   user_id: number;

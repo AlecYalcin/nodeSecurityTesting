@@ -88,7 +88,7 @@ class PaymentController {
       const payments = await Payment.search(query);
       return res.status(200).json(payments);
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao pesquisar pagamento." });
+      return res.status(400).json({ message: error, error: true });
     }
   };
 
@@ -103,7 +103,7 @@ class PaymentController {
       }
       return res.status(200).json({ message: "Sucesso ao excluir pagamento!" });
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao excluir pagamento." });
+      return res.status(400).json({ message: error, error: true });
     }
   };
 
@@ -119,17 +119,23 @@ class PaymentController {
 
       // ERRO 403: Token não autorizado.
       if (res.locals.user.id != user_id && !res.locals.user.isAdmin) {
-        return res.status(404).json({ message: "Usuário não autorizado." });
+        return res
+          .status(404)
+          .json({ message: "Usuário não autorizado.", error: true });
       }
 
       // // ERRO 400: Usuário e Target idênticos
       if (user_id == target_id) {
-        return res.status(400).json({ message: "Usuários iguais." });
+        return res
+          .status(400)
+          .json({ message: "Usuários iguais.", error: true });
       }
 
       // // ERRO 400: Quantidade não existente na conta
       if (total > user.bank) {
-        return res.status(400).json({ message: "Banco insuficiente." });
+        return res
+          .status(400)
+          .json({ message: "Banco insuficiente.", error: true });
       }
 
       // Retirando do usuário
@@ -142,9 +148,7 @@ class PaymentController {
 
       return res.status(200).json({ message: "Transferência realizada." });
     } catch (error) {
-      return res
-        .status(400)
-        .json({ message: "Aconteceu um erro.", error: error });
+      return res.status(400).json({ message: error, error: true });
     }
   };
 }
