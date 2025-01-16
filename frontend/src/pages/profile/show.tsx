@@ -71,7 +71,10 @@ const PageProfileShow = () => {
 
       <div className="container mt-2">
         {/* Acessar Histórico */}
-        <a className="btn btn-md btn-info me-2" href="/profile/1/history">
+        <a
+          className="btn btn-md btn-info me-2"
+          href={`/profile/${user_id}/history`}
+        >
           Acessar Histórico de Compra
         </a>
 
@@ -81,12 +84,18 @@ const PageProfileShow = () => {
         </a>
 
         {/* Editar Conta */}
-        <a className="btn btn-md btn-primary me-2" href="/profile/1/edit">
+        <a
+          className="btn btn-md btn-primary me-2"
+          href={`/profile/${user_id}/edit`}
+        >
           Editar Conta
         </a>
 
         {/* Excluir Conta */}
-        <a className="btn btn-md btn-danger" href="/profile/1/delete">
+        <a
+          className="btn btn-md btn-danger"
+          href={`/profile/${user_id}/delete`}
+        >
           Excluir Conta
         </a>
       </div>

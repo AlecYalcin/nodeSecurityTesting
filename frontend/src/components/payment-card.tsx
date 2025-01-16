@@ -1,14 +1,6 @@
-const PaymentCard = ({
-  payment,
-}: {
-  payment: {
-    id: number;
-    user_id: number;
-    book_id: number;
-    total_price: number;
-    quantity: number;
-  };
-}) => {
+import { paymentInterface } from "../api/payments";
+
+const PaymentCard = ({ payment }: { payment: paymentInterface }) => {
   return (
     <div className="container-fluid px-3">
       <a href={`/payment/${payment.id}`} className="text-decoration-none">

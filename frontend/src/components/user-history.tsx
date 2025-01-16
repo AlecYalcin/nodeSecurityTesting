@@ -1,18 +1,13 @@
+import { paymentInterface } from "../api/payments";
 import PaymentCard from "./payment-card";
 
-const UserHistory = () => {
-  const history = [
-    { id: 1, user_id: 1, book_id: 1, total_price: 100, quantity: 20 },
-    { id: 2, user_id: 1, book_id: 2, total_price: 298, quantity: 78 },
-    { id: 3, user_id: 1, book_id: 3, total_price: 34, quantity: 2 },
-  ];
-
+const UserHistory = ({ history }: { history: paymentInterface[] }) => {
   return (
     <div className="container p-2">
       <div className="container-fluid">
-        {history.map((payment) => {
+        {history.map((payment, index) => {
           return (
-            <div className="mb-2">
+            <div className="mb-2" key={index}>
               <PaymentCard payment={payment} />
             </div>
           );
