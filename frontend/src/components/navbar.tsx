@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 import SideBar from "./side-bar";
 import { useNavigate } from "react-router-dom";
 import { getStorage } from "../api/env-config";
-import { getUser } from "../api/auth";
+import { retrieveUser } from "../api/users";
 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,7 +25,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const data = await getUser(Number(id));
+      const data = await retrieveUser(Number(id));
 
       setUser({
         id: data.id,

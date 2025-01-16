@@ -6,7 +6,9 @@ class UserController {
   createUser = async (req: any, res: any) => {
     // ERRO 403: Verificando Token
     if (!res.locals.user.isAdmin) {
-      return res.status(403).json({ message: "Usuário não autorizado." });
+      return res
+        .status(403)
+        .json({ message: "Usuário não autorizado.", error: true });
     }
 
     try {
@@ -15,9 +17,7 @@ class UserController {
       await User.create({ name, email, password, bank, isAdmin });
       return res.status(201).json({ message: "Sucesso ao criar usuário!" });
     } catch (error) {
-      return res
-        .status(400)
-        .json({ message: "Falha ao criar o usuário.", error: error });
+      return res.status(400).json({ message: error, error: true });
     }
   };
 
@@ -26,19 +26,23 @@ class UserController {
 
     // ERRO 403: Verificando Token
     if (id != res.locals.user.id && !res.locals.user.isAdmin) {
-      return res.status(403).json({ message: "Usuário não autorizado." });
+      return res
+        .status(403)
+        .json({ message: "Usuário não autorizado.", error: true });
     }
 
     try {
       const user = await User.retrieve({ id });
 
       if (!user) {
-        return res.status(404).json({ message: "Usuário não encontrado." });
+        return res
+          .status(404)
+          .json({ message: "Usuário não encontrado.", error: true });
       }
 
       return res.status(200).json(user);
     } catch (error) {
-      return res.status(400).json({ message: "Erro ao procurar usuário." });
+      return res.status(400).json({ message: error, error: true });
     }
   };
 
@@ -49,7 +53,9 @@ class UserController {
     // ERRO 403: Verificando Token
 
     if (!res.locals.user.isAdmin) {
-      return res.status(403).json({ message: "Usuário não autorizado." });
+      return res
+        .status(403)
+        .json({ message: "Usuário não autorizado.", error: true });
     }
 
     // Query de Busca
@@ -67,7 +73,7 @@ class UserController {
       const users = await User.search(query);
       return res.status(200).json(users);
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao buscar usuário." });
+      return res.status(400).json({ message: error, error: true });
     }
   };
 
@@ -77,7 +83,9 @@ class UserController {
 
     // ERRO 403: Verificando Token
     if (id != res.locals.user.id && !res.locals.user.isAdmin) {
-      return res.status(403).json({ message: "Usuário não autorizado." });
+      return res
+        .status(403)
+        .json({ message: "Usuário não autorizado.", error: true });
     }
 
     try {
@@ -85,7 +93,7 @@ class UserController {
 
       return res.status(200).json({ message: "Sucesso ao atualizar usuário!" });
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao atualizar usuário." });
+      return res.status(400).json({ message: error, error: true });
     }
   };
 
@@ -95,7 +103,9 @@ class UserController {
 
     // ERRO 403: Verificando Token
     if (id != res.locals.user.id && !res.locals.user.isAdmin) {
-      return res.status(403).json({ message: "Usuário não autorizado." });
+      return res
+        .status(403)
+        .json({ message: "Usuário não autorizado.", error: true });
     }
 
     try {
@@ -103,7 +113,7 @@ class UserController {
 
       return res.status(200).json({ message: "Sucesso ao excluir usuário!" });
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao excluir usuário." });
+      return res.status(400).json({ message: error, error: true });
     }
   };
 }

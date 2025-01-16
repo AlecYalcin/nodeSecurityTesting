@@ -11,3 +11,8 @@ export const getStorage = () => {
 
   return { token, id };
 };
+
+export interface messageReturn {
+  message: string;
+  error?: boolean;
+}
