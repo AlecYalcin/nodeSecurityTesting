@@ -6,6 +6,7 @@ const Book = ({
   book = null,
   edit = false,
   create = false,
+  admin = false,
 }: {
   book: {
     id: number;
@@ -16,6 +17,7 @@ const Book = ({
   } | null;
   edit: boolean;
   create: boolean;
+  admin: boolean;
 }) => {
   const navigate = useNavigate();
 
@@ -71,8 +73,6 @@ const Book = ({
 
     return;
   };
-
-  const admin = true;
 
   return (
     <div>
