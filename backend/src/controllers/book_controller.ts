@@ -59,7 +59,7 @@ class BookController {
       if (greater) query += `AND price >='${greater}' `;
       if (stock) query += `ORDER BY stock ASC `;
       if (lower) query += `ORDER BY price ASC `;
-      if (recent) query += `ORDER BY createdAt ASC`;
+      if (recent) query += `ORDER BY createdAt DESC`;
     }
 
     console.log(query);

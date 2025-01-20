@@ -8,12 +8,12 @@ dotenv.config();
 // Chave Secreta do JWT
 const SECRET_KEY = process.env.SECRET_KEY as string;
 
-const verifyToken = (req: Request, res: Response) => {
+const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers["authorization"];
 
   // ERRO 400: Verificando existência do Token
   if (!authHeader) {
-    res.status(400).json({ message: "Token não encontrado." });
+    res.status(400).json({ message: "Token não encontrado.", error: true });
     return;
   }
 
@@ -24,21 +24,13 @@ const verifyToken = (req: Request, res: Response) => {
   jwt.verify(token, SECRET_KEY, (error, jwt_user) => {
     // ERROR 403: Token Inválido
     if (error) {
-      res.status(403).json({ message: "Token não válido." });
+      res.status(403).json({ message: "Token não válido.", error: true });
       return;
     }
 
     res.locals.user = jwt_user;
+    next();
   });
 };
 
-const verifyTokenMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  verifyToken(req, res);
-  next();
-};
-
-export default verifyTokenMiddleware;
+export default verifyToken;

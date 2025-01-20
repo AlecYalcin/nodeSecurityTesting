@@ -81,15 +81,15 @@ const App = () => {
       {/* Main Page */}
       <div>
         <div className="container shadow text-center bg-body p-2 mt-3 mb-5">
-          <BookList title="Novos lançamentos!" books={recent} />
+          <BookList id="new" title="Novos lançamentos!" books={recent} />
         </div>
 
         <div className="container shadow text-center bg-body p-2 mt-3 mb-5">
-          <BookList title="Melhores preços!" books={price} />
+          <BookList id="prices" title="Melhores preços!" books={price} />
         </div>
 
         <div className="container shadow text-center bg-body p-2 mt-3 mb-5">
-          <BookList title="Estão acabando!" books={stock} />
+          <BookList id="stock" title="Estão acabando!" books={stock} />
         </div>
       </div>
     </div>

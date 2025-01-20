@@ -25,15 +25,21 @@ const Navbar = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const data = await retrieveUser(Number(id));
+      try {
+        const data = await retrieveUser(Number(id));
 
-      setUser({
-        id: data.id,
-        name: data.name,
-        bank: data.bank,
-      });
+        if (data.error) return;
 
-      if (data.isAdmin) setIsAdmin(true);
+        setUser({
+          id: data.id,
+          name: data.name,
+          bank: data.bank,
+        });
+
+        if (data.isAdmin) setIsAdmin(true);
+      } catch (error) {
+        alert(error);
+      }
     };
 
     fetchUser();
