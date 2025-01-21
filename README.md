@@ -104,8 +104,24 @@ Algumas dessas dependências são somente de servidor. Como a aplicação é um 
 
 ### Lógica de Negócios
 
-W.I.P
+Para que a aplicação siga modelos reais de E-commerce presentes no mercado, uma lógica interna de negócios é essencial para se entender como funciona todo o processamento de informações e como isso reflete na empresa real. Nesse software, a aplicação é separada em quatro partes: Autenticação, Negócios, Livraria e Perfis.
 
-## Testagem de Erros
+#### Autenticação
+
+Segue os modelos padrões de mercado com um tipo de autenticação JWT. A autorização é reservada a certos usuários com maiores permissões no sistema (os admins).
+
+#### Negócios
+
+A paginação dos negócios é baseada em duas partes: Compra de Livros e Transferência Bancária. A compra livros gera pagamentos que ficam salvos no sistema, alteram a quantidade bancária de usuários e o estoque de livros. Além dos pagamentos serem temporais, ou seja, representam o prçeo naquele período de tempo (Pois os livros podem sofrer alterações de preço). A transferência bancária reflete o ato de emprestar dinheiro a uma conta diferente, alterando ambos os usuários do sistema, mas não deixa rastros do ocorrido.
+
+#### Livraria
+
+Todo o CRUD de Livros. Que incui a criação, pesquisa, alteração, exclusão e leitura dos dados salvos no banco de dados. Algumas funções são restritas a administradores do sistema.
+
+#### Perfis
+
+Todo o CRUD de Usuários. Que inclui a criação, pesquisa, alteração, exclusão e leitura dos dados salvos no banco de dados. A maioria das funções são restristas a administradores do sistema.
+
+## Testagem de Erross
 
 W.I.P
