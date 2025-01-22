@@ -1,28 +1,33 @@
 // Packages
 import express from "express";
+import cors from "cors";
 
 // Modules
-import { syncDatabase } from "./database/config/database";
+import { createTables, connection_clear } from "./database/config/database";
 import seeder from "./database/seed";
 import userRoutes from "./routes/users";
 import bookRoutes from "./routes/books";
 import paymentRoutes from "./routes/payment";
 import authRoutes from "./routes/auth";
 
-// Servidor Database
-syncDatabase()
-  .then(() => {
-    console.log("Database is ready.");
-  })
-  .catch((error) => {
-    console.log("An error has ocurred.\n", error);
-  });
+// Estabelecendo Banco de Dados
+if (connection_clear()) {
+  console.log("Conectado ao banco de dados!");
+  createTables();
+} else {
+  console.error("Erro ao conectar na base de dados.");
+}
 
 // Servidor Express
 const app = express();
 
 // Express com Json
 app.use(express.json());
+
+// Configuração de Headers
+app.use(cors());
+
+app.options("*", cors());
 
 // Rotas de Usuários
 app.use("/users", userRoutes);

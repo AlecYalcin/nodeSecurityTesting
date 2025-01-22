@@ -13,7 +13,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 
   // ERRO 400: Verificando existência do Token
   if (!authHeader) {
-    res.status(400).json({ message: "Token não encontrado." });
+    res.status(400).json({ message: "Token não encontrado.", error: true });
     return;
   }
 
@@ -24,7 +24,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   jwt.verify(token, SECRET_KEY, (error, jwt_user) => {
     // ERROR 403: Token Inválido
     if (error) {
-      res.status(403).json({ message: "Token não válido." });
+      res.status(403).json({ message: "Token não válido.", error: true });
       return;
     }
 

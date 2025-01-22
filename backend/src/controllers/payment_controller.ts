@@ -1,9 +1,3 @@
-// Packages
-import { QueryTypes } from "sequelize";
-
-// Database Config
-import { sequelize } from "../database/config/database";
-
 // Model
 import Payment from "../database/models/payments";
 
@@ -15,40 +9,36 @@ class PaymentController {
   createPayment = async (req: any, res: any) => {
     const { user_id, book_id, quantity } = req.body;
 
-    // Verificar se o USUÁRIO existe
-    const user = await User.findOne({ where: { id: user_id } });
-
-    // ERRO 404: Usuário não Encontrado.
-    if (!user) {
-      return res.status(404).json({ message: "Usuário não encontrado." });
-    }
-
-    // ERRO 403: Token não autorizado.
-    if (res.locals.user.id != user_id && !res.locals.user.isAdmin) {
-      return res.status(404).json({ message: "Usuário não autorizado." });
-    }
-
-    // Verificar se o LIVRO existe
-    const book = await Book.findOne({ where: { id: book_id } });
-
-    // ERRO 404: Livro não Encontrado
-    if (!book) {
-      return res.status(404).json({ message: "Livro não encontrado." });
-    }
-
-    const price = book.dataValues.price * quantity;
-
-    // ERRO 400: Verificar se a QUANTIDADE é POSSÍVEL
-    if (book.dataValues.stock < quantity) {
-      return res.status(400).json({ message: "Livros indisponíveis." });
-    }
-
-    // ERRO 400: Verificar se o USUÁRIO CONSEGUE PAGAR
-    if (user.dataValues.bank < price) {
-      return res.status(400).json({ message: "Saldo insuficiente." });
-    }
-
     try {
+      // Verificar se o USUÁRIO existe
+      const user = await User.retrieve({ id: user_id });
+
+      // ERRO 403: Token não autorizado.
+      if (res.locals.user.id != user_id && !res.locals.user.isAdmin) {
+        return res
+          .status(404)
+          .json({ message: "Usuário não autorizado.", error: true });
+      }
+
+      // Verificar se o LIVRO existe
+      const book = await Book.retrieve({ id: book_id });
+
+      const price = book.price * quantity;
+
+      // ERRO 400: Verificar se a QUANTIDADE é POSSÍVEL
+      if (book.stock < quantity) {
+        return res
+          .status(400)
+          .json({ message: "Livros indisponíveis.", error: true });
+      }
+
+      // ERRO 400: Verificar se o USUÁRIO CONSEGUE PAGAR
+      if (user.bank < price) {
+        return res
+          .status(400)
+          .json({ message: "Saldo insuficiente.", error: true });
+      }
+
       // Realizando o Pagamento
       const payment = await Payment.create({
         user_id: user_id,
@@ -59,38 +49,24 @@ class PaymentController {
 
       if (payment) {
         // Retirando do Estoque
-        await Book.update(
-          {
-            stock: book.dataValues.stock - quantity,
-          },
-          {
-            where: {
-              id: book_id,
-            },
-          }
-        );
+        await Book.update(book_id, {
+          stock: book.stock - quantity,
+        });
 
         // Retirando do Banco
-        await User.update(
-          {
-            bank: user.dataValues.bank - price,
-          },
-          {
-            where: {
-              id: user_id,
-            },
-          }
-        );
+        await User.update(user_id, {
+          bank: user.bank - price,
+        });
       }
 
       return res.status(201).json({ message: "Sucesso ao criar pagamento!" });
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao criar pagamento." });
+      return res.status(400).json({ message: error, error: true });
     }
   };
 
   readPayment = async (req: any, res: any) => {
-    const { user_id, book_id, greater, lower, date } = req.query;
+    const { id, user_id, book_id, greater, lower, date } = req.query;
 
     // Query de Busca para Usuários
     let query = `SELECT * FROM payments WHERE user_id=${res.locals.user.id} `;
@@ -100,7 +76,8 @@ class PaymentController {
       query = "SELECT * FROM payments WHERE 1=1 ";
     }
     // Alterando QUERY com Where
-    if (user_id || book_id || greater || date) {
+    if (id || user_id || book_id || greater || lower || date) {
+      if (id) query += `AND id='${id}' `;
       if (book_id) query += `AND book_id='${book_id}' `;
       if (greater) query += `AND total_price >='${greater}' `;
       if (lower) query += `AND total_price <='${lower}' `;
@@ -109,10 +86,10 @@ class PaymentController {
     }
 
     try {
-      const [payments, metadata] = await sequelize.query(query);
+      const payments = await Payment.search(query);
       return res.status(200).json(payments);
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao pesquisar pagamento." });
+      return res.status(400).json({ message: error, error: true });
     }
   };
 
@@ -120,95 +97,59 @@ class PaymentController {
     const id = req.params.id;
 
     try {
-      let payment = 0;
-
       if (res.locals.user.isAdmin) {
-        payment = await Payment.destroy({
-          where: {
-            id: id,
-          },
-        });
+        await Payment.delete(id);
       } else {
-        payment = await Payment.destroy({
-          where: {
-            id: id,
-            user_id: res.locals.user.id,
-          },
-        });
+        await Payment.delete(id, res.locals.user.id);
       }
-
-      // ERRO 403: Nenhum registro foi excluído. Logo, usuário não autorizado ou não existe esse registro
-      if (payment == 0) {
-        return res.status(403).json({ message: "Falha ao excluir pagamento." });
-      }
-
       return res.status(200).json({ message: "Sucesso ao excluir pagamento!" });
     } catch (error) {
-      return res.status(400).json({ message: "Falha ao excluir pagamento." });
+      return res.status(400).json({ message: error, error: true });
     }
   };
 
   transferBank = async (req: any, res: any) => {
     const { user_id, target_id, total } = req.body;
 
-    // Recuperando Usuário
-    const user = await User.findOne({
-      where: {
-        id: user_id,
-      },
-    });
-
-    // Recuperando Usuário de Destino
-    const target = await User.findOne({
-      where: {
-        id: target_id,
-      },
-    });
-
-    // ERRO 404: Verificando existência de usuários
-    if (!user || !target) {
-      return res.status(404).json({ message: "Usuários não encontrados." });
-    }
-
-    // ERRO 403: Token não autorizado.
-    if (res.locals.user.id != user_id) {
-      return res.status(404).json({ message: "Usuário não autorizado." });
-    }
-
-    // ERRO 400: Usuário e Target idênticos
-    if (user_id == target_id) {
-      return res.status(400).json({ message: "Usuários iguais." });
-    }
-
-    // ERRO 400: Quantidade não existente na conta
-    if (total > user.dataValues.bank) {
-      return res.status(400).json({ message: "Banco insuficiente." });
-    }
-
     try {
+      // Recuperando Usuário
+      const user = await User.retrieve({ id: user_id });
+
+      // Recuperando Usuário de Destino
+      const target = await User.retrieve({ id: target_id });
+
+      // ERRO 403: Token não autorizado.
+      if (res.locals.user.id != user_id && !res.locals.user.isAdmin) {
+        return res
+          .status(404)
+          .json({ message: "Usuário não autorizado.", error: true });
+      }
+
+      // // ERRO 400: Usuário e Target idênticos
+      if (user_id == target_id) {
+        return res
+          .status(400)
+          .json({ message: "Usuários iguais.", error: true });
+      }
+
+      // // ERRO 400: Quantidade não existente na conta
+      if (total > user.bank) {
+        return res
+          .status(400)
+          .json({ message: "Banco insuficiente.", error: true });
+      }
+
       // Retirando do usuário
-      await User.update(
-        {
-          bank: user.dataValues.bank - total,
-        },
-        {
-          where: { id: user_id },
-        }
-      );
+      await User.update(user_id, { bank: user.bank - total });
 
       // Adicionando ao usuário destino
-      await User.update(
-        {
-          bank: target.dataValues.bank + total,
-        },
-        {
-          where: { id: target_id },
-        }
-      );
+      await User.update(target_id, {
+        bank: (target.bank as Number) + total,
+      });
 
       return res.status(200).json({ message: "Transferência realizada." });
     } catch (error) {
-      return res.status(400).json({ message: "Aconteceu um erro." });
+      return res.status(400).json({ message: error, error: true });
     }
   };
 }
