@@ -16,5 +16,8 @@ COPY . .
 # Exponha a porta usada pelo backend
 EXPOSE 4000
 
+# Build
+RUN npm run build
+
 # Comando de inicialização
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]

@@ -67,6 +67,12 @@ Para executar a aplicação, a máquina do usuário deve ter alguns recursos. Qu
 
 Para instalar os pacotes de cada interface (frontend e/ou backend) é necessário entrar nas respectivas pastas e rodar o comando `npm install`. Os pacotes que podem ser encontrados nessa instalação são:
 
+Além disso, é necessário rodar com o docker a imagem do MySQL. Se por algum motivo o docker não utilizar a imagem correta do MySQL, siga esses passos:
+
+1. docker pull mysql:8
+
+Então, o docker vai baixar autometicamente a imagme.
+
 #### Backend
 
     "@types/express": "^5.0.0",
