@@ -101,26 +101,44 @@ class User {
   static retrieve = async (where: WhereUser): Promise<RowDataPacket> => {
     // Procurando na Base de Dados
     return new Promise((resolve, reject) => {
-      let query = `SELECT id, name, email, bank, isAdmin FROM users WHERE 1=1 `;
+      // Início da Query
+      let query = `SELECT id, name, email, bank, isAdmin FROM users`;
 
+      // Condições da Query
+      const conditions: string[] = [];
+
+      // Valores da Query
+      const values: any[] = [];
+
+      // Descobrindo se há parâmetros de busca
       if (where && typeof where === "object") {
+        // Adicionando os paarâmetros de busca e valores
         for (const [key, value] of Object.entries(where)) {
-          query += `AND ${key}='${value}' `;
+          conditions.push(`${key} = ?`);
+          values.push(value);
         }
       } else {
         reject("Parâmetros não existentes.");
       }
 
-      connection.query<RowDataPacket[]>(query, function (error, instance) {
-        if (error) {
-          reject(error);
-        } else if (instance.length == 0) {
-          reject("Usuário não encontrado.");
-        } else {
-          instance[0].bank = Number(instance[0].bank);
-          resolve(instance[0]);
+      // Adicionando condições e valores na query
+      if (conditions.length > 0) query += " WHERE " + conditions.join(" AND ");
+
+      // Realizando Query Segura
+      connection.query<RowDataPacket[]>(
+        query,
+        values,
+        function (error, instance) {
+          if (error) {
+            reject(error);
+          } else if (instance.length == 0) {
+            reject("Usuário não encontrado.");
+          } else {
+            instance[0].bank = Number(instance[0].bank);
+            resolve(instance[0]);
+          }
         }
-      });
+      );
     });
   };
 
