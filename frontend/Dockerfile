@@ -16,5 +16,8 @@ COPY . .
 # Exponha a porta usada pelo frontend
 EXPOSE 3000
 
+# Build
+RUN npm run build
+
 # Comando de inicialização
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "preview"]

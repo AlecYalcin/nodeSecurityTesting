@@ -30,7 +30,7 @@ const PageBookEdit = () => {
 
   return (
     <div className="bg-body-tertiary">
-      <Book book={book} edit={true} create={false} />
+      <Book book={book} edit={true} create={false} admin={false} />
     </div>
   );
 };
