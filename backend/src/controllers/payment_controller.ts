@@ -23,6 +23,7 @@ class PaymentController {
       // Verificar se o LIVRO existe
       const book = await Book.retrieve({ id: book_id });
 
+      // Calculando o preço final
       const price = book.price * quantity;
 
       // ERRO 400: Verificar se a QUANTIDADE é POSSÍVEL
@@ -125,14 +126,14 @@ class PaymentController {
           .json({ message: "Usuário não autorizado.", error: true });
       }
 
-      // // ERRO 400: Usuário e Target idênticos
+      // ERRO 400: Usuário e Target idênticos
       if (user_id == target_id) {
         return res
           .status(400)
           .json({ message: "Usuários iguais.", error: true });
       }
 
-      // // ERRO 400: Quantidade não existente na conta
+      // ERRO 400: Quantidade não existente na conta
       if (total > user.bank) {
         return res
           .status(400)

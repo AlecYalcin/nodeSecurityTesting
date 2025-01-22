@@ -112,29 +112,46 @@ class Payment {
   static retrieve = async (where: WherePayment): Promise<RowDataPacket> => {
     // Procurando na Base de Dados
     return new Promise((resolve, reject) => {
-      let query = `SELECT id, book_id, user_id, total_price, quantity FROM payments WHERE 1=1 `;
+      // Query Inicial
+      let query = `SELECT id, book_id, user_id, total_price, quantity FROM payments`;
 
+      // Array de Condições
+      const conditions: string[] = [];
+
+      // Array de Valores
+      const values: any[] = [];
+
+      // Adicionando condições no array
       if (where && typeof where === "object") {
         for (const [key, value] of Object.entries(where)) {
-          query += `AND ${key}='${value}' `;
+          conditions.push(`${key} = ?`);
+          values.push(value);
         }
       } else {
         reject("Parâmetros não existentes.");
       }
 
-      connection.query<RowDataPacket[]>(query, function (error, instance) {
-        if (error) {
-          reject(error);
-        } else if (instance.length == 0) {
-          reject("Pagamento não encontrado.");
-        } else {
-          resolve(instance[0]);
+      // Adicionando as condições na query
+      if (conditions.length > 0) query += " WHERE " + conditions.join(" AND ");
+
+      // Busca no Banco de Dados
+      connection.query<RowDataPacket[]>(
+        query,
+        values,
+        function (error, instance) {
+          if (error) {
+            reject(error);
+          } else if (instance.length == 0) {
+            reject("Pagamento não encontrado.");
+          } else {
+            resolve(instance[0]);
+          }
         }
-      });
+      );
     });
   };
 
-  static update = async (id: number, updates: any): Promise<void> => {
+  static update = async (id: number, updates: WherePayment): Promise<void> => {
     // Procurando na Base de Dados
     const book = await this.retrieve({ id: id });
 
@@ -143,23 +160,30 @@ class Payment {
       // Criando de atualização
       let query = "UPDATE payments SET ";
 
-      // Adicionando parâmetros para atualizar
+      // Array de Condições
+      const conditions: string[] = [];
+
+      // Array de Valores
+      const values: any[] = [];
+
+      // Adicionando condições no array
       if (updates && typeof updates === "object") {
-        const keys = Object.keys(updates);
-        for (let i = 0; i < keys.length; i++) {
-          if (i == keys.length - 1)
-            query += `${keys[i]} = "${updates[keys[i]]}"`;
-          else query += `${keys[i]} = "${updates[keys[i]]}", `;
+        for (const [key, value] of Object.entries(updates)) {
+          conditions.push(`${key} = ?`);
+          values.push(value);
         }
       } else {
-        reject("Parâmetros não colocados.");
+        reject("Parâmetros não existentes.");
       }
+
+      // Adicionando as condições na query
+      if (conditions.length > 0) query += conditions.join(", ");
 
       // Finalizando query com id
       query += ` WHERE id=${id};`;
 
       // Executando Query
-      connection.query(query, function (error) {
+      connection.query(query, values, function (error) {
         if (error) {
           reject(error);
         } else {
