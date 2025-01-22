@@ -16,6 +16,7 @@ export interface WhereUser {
   password?: string;
   email?: string;
   isAdmin?: number | string;
+  bank?: number;
 }
 
 class User {
@@ -154,7 +155,7 @@ class User {
     });
   };
 
-  static update = async (id: number, updates: any): Promise<void> => {
+  static update = async (id: number, updates: WhereUser): Promise<void> => {
     // Procurando na Base de Dados
     const user = await this.retrieve({ id: id });
 
@@ -163,23 +164,31 @@ class User {
       // Criando de atualização
       let query = "UPDATE users SET ";
 
+      // Condições da Query
+      const conditions: string[] = [];
+
+      // Valores da Query
+      const values: any[] = [];
+
       // Adicionando parâmetros para atualizar
       if (updates && typeof updates === "object") {
-        const keys = Object.keys(updates);
-        for (let i = 0; i < keys.length; i++) {
-          if (i == keys.length - 1)
-            query += `${keys[i]} = "${updates[keys[i]]}"`;
-          else query += `${keys[i]} = "${updates[keys[i]]}", `;
+        // Adicionando os paarâmetros de busca e valores
+        for (const [key, value] of Object.entries(updates)) {
+          conditions.push(`${key} = ?`);
+          values.push(value);
         }
       } else {
-        reject("Parâmetros não colocados.");
+        reject("Parâmetros não existentes.");
       }
 
-      // Finalizando query com id
+      // Adicionando condições e valores na query
+      if (conditions.length > 0) query += conditions.join(", ");
+
+      // Finalizando a query com o ID
       query += ` WHERE id=${id};`;
 
       // Executando Query
-      connection.query(query, function (error) {
+      connection.query(query, values, function (error) {
         if (error) {
           reject(error);
         } else {
