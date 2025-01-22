@@ -102,6 +102,12 @@ Para instalar os pacotes de cada interface (frontend e/ou backend) é necessári
 
 Algumas dessas dependências são somente de servidor. Como a aplicação é um estudo fechado e não tem intenções de ser lançada em produção, não é necessário uma diferenciação entre os pacotes.
 
+Além disso, é necessário rodar com o docker a imagem do MySQL. Se por algum motivo o docker não utilizar a imagem correta do MySQL, siga esses passos:
+
+1. docker pull mysql:8
+
+Então, o docker vai baixar autometicamente a imagme.
+
 ### Lógica de Negócios
 
 Para que a aplicação siga modelos reais de E-commerce presentes no mercado, uma lógica interna de negócios é essencial para se entender como funciona todo o processamento de informações e como isso reflete na empresa real. Nesse software, a aplicação é separada em quatro partes: Autenticação, Negócios, Livraria e Perfis.
@@ -121,7 +127,3 @@ Todo o CRUD de Livros. Que incui a criação, pesquisa, alteração, exclusão e
 #### Perfis
 
 Todo o CRUD de Usuários. Que inclui a criação, pesquisa, alteração, exclusão e leitura dos dados salvos no banco de dados. A maioria das funções são restristas a administradores do sistema.
-
-## Testagem de Erross
-
-W.I.P
