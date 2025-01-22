@@ -1,6 +1,7 @@
 // Packages
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 // Modules
 import { createTables, connection_clear } from "./database/config/database";
@@ -23,6 +24,9 @@ const app = express();
 
 // Express com Json
 app.use(express.json());
+
+// Interpretação de Cookies
+app.use(cookieParser());
 
 // Configuração de Headers
 app.use(cors());

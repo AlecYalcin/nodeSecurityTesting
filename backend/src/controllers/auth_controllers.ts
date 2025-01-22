@@ -14,12 +14,15 @@ class AuthController {
   login = async (req: any, res: any) => {
     const { email, password } = req.body;
 
+    console.log(email, password);
     // Verificando existência de usuaŕio
     try {
       const user = await User.retrieve({
         email,
         password,
       });
+
+      console.log(user);
 
       if (typeof user.isAdmin === "string" && user.isAdmin == "true") {
         user.isAdmin = true;
@@ -41,9 +44,18 @@ class AuthController {
         }
       );
 
-      return res
-        .status(200)
-        .json({ message: "Autenticado.", token: token, id: user.id });
+      console.log(user);
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        maxAge: 1000 * 60 * 60 * 24 * 2,
+      });
+
+      console.log(user);
+
+      return res.status(200).json({ message: "Autenticado.", id: user.id });
     } catch (error) {
       return res.status(400).json({
         message: error,
@@ -78,9 +90,15 @@ class AuthController {
         }
       );
 
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        maxAge: 1000 * 60 * 60 * 24 * 2,
+      });
+
       return res.status(201).json({
         message: "Sucesso ao criar usuário!",
-        token: token,
         id: user.id,
       });
     } catch (error) {
