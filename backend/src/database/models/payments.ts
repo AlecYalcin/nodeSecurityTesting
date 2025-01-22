@@ -15,6 +15,9 @@ export interface WherePayment {
   user_id?: number;
   total_price?: number;
   quantity?: number;
+  greater?: number;
+  lower?: number;
+  date?: string;
 }
 
 class Payment {
@@ -215,15 +218,65 @@ class Payment {
     });
   };
 
-  static search = async (query: string): Promise<Array<RowDataPacket>> => {
+  static search = async (
+    params: WherePayment,
+    admin: boolean
+  ): Promise<Array<RowDataPacket>> => {
+    // Query de Busca para Usuários
+    let query = "SELECT * FROM payments";
+
+    // Array de Condições
+    const conditions: string[] = [];
+
+    // Array de Valores
+    const values: any[] = [];
+
+    if (params.id) {
+      conditions.push("id = ?");
+      values.push(params.id);
+    }
+
+    if (params.book_id) {
+      conditions.push("book_id = ?");
+      values.push(params.book_id);
+    }
+
+    if (params.greater) {
+      conditions.push("total_price >= ?");
+      values.push(params.greater);
+    }
+
+    if (params.lower) {
+      conditions.push("total_price <= ?");
+      values.push(params.lower);
+    }
+
+    if (params.date) {
+      conditions.push("date <= ?");
+      values.push(params.date);
+    }
+
+    // Diminuindo a pesquisa para admins ou usuários
+    if (!admin) {
+      conditions.push("user_id = ?");
+      values.push(params.user_id);
+    }
+
+    // Adicionando os parâmetros na pesquisa
+    if (conditions.length > 0) query += " WHERE " + conditions.join(" AND ");
+
     return new Promise((resolve, reject) => {
-      connection.query<RowDataPacket[]>(query, function (error, instances) {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(instances);
+      connection.query<RowDataPacket[]>(
+        query,
+        values,
+        function (error, instances) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(instances);
+          }
         }
-      });
+      );
     });
   };
 }

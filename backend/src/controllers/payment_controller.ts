@@ -69,25 +69,18 @@ class PaymentController {
   readPayment = async (req: any, res: any) => {
     const { id, user_id, book_id, greater, lower, date } = req.query;
 
-    // Query de Busca para Usuários
-    let query = `SELECT * FROM payments WHERE user_id=${res.locals.user.id} `;
-
-    // Query de Busca para Admins
-    if (res.locals.user.isAdmin) {
-      query = "SELECT * FROM payments WHERE 1=1 ";
-    }
-    // Alterando QUERY com Where
-    if (id || user_id || book_id || greater || lower || date) {
-      if (id) query += `AND id='${id}' `;
-      if (book_id) query += `AND book_id='${book_id}' `;
-      if (greater) query += `AND total_price >='${greater}' `;
-      if (lower) query += `AND total_price <='${lower}' `;
-      if (date) query += +`AND date<='${date}' `;
-      if (user_id && res.locals.user.isAdmin) query += `AND user_id=${user_id}`;
-    }
-
     try {
-      const payments = await Payment.search(query);
+      const payments = await Payment.search(
+        {
+          id,
+          user_id,
+          book_id,
+          greater,
+          lower,
+          date,
+        },
+        res.locals.user.isAdmin
+      );
       return res.status(200).json(payments);
     } catch (error) {
       return res.status(400).json({ message: error, error: true });
