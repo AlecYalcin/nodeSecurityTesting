@@ -7,7 +7,7 @@ const router = express.Router();
 router.use(verifyToken);
 
 // CREATE
-router.post("/", async (req, res) => UserController.createUser(req, res));
+router.post("/create", async (req, res) => UserController.createUser(req, res));
 
 // SEARCH
 router.get("/search", async (req, res) => UserController.searchUser(req, res));

@@ -1,5 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { connection } from "../config/database";
+import { constrainedMemory } from "process";
 
 export interface UserAttribute {
   id?: number;
@@ -216,15 +217,50 @@ class User {
     });
   };
 
-  static search = async (query: string): Promise<Array<RowDataPacket>> => {
+  static search = async (params: WhereUser): Promise<Array<RowDataPacket>> => {
     return new Promise((resolve, reject) => {
-      connection.query<RowDataPacket[]>(query, function (error, instances) {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(instances);
+      // Query de Busca
+      let query = "SELECT id, name, email, isAdmin, bank FROM users";
+
+      // Condições da Query
+      const conditions: string[] = [];
+
+      // Valores da Query
+      const values: any[] = [];
+
+      // Coletando parâmetros de pesquisa
+      if (params.id) {
+        conditions.push("id = ?");
+        values.push(params.id);
+      }
+      if (params.name) {
+        conditions.push("name LIKE ?");
+        values.push(`%${params.name}%`);
+      }
+      if (params.email) {
+        conditions.push("email LIKE ?");
+        values.push(`%${params.email}%`);
+      }
+      if (params.isAdmin) {
+        conditions.push("isAdmin = ?");
+        values.push(params.isAdmin);
+      }
+
+      // Adicionando os parâmetros na pesquisa
+      if (conditions.length > 0) query += " WHERE " + conditions.join(" AND ");
+
+      // Realizando query
+      connection.query<RowDataPacket[]>(
+        query,
+        values,
+        function (error, instances) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(instances);
+          }
         }
-      });
+      );
     });
   };
 }

@@ -58,19 +58,8 @@ class UserController {
         .json({ message: "Usuário não autorizado.", error: true });
     }
 
-    // Query de Busca
-    let query = "SELECT id, name, email, isAdmin, bank FROM users WHERE 1=1 ";
-
-    // Alterando QUERY com Where
-    if (id || name || email || isAdmin) {
-      if (id) query += `AND id='${id}' `;
-      if (name) query += `AND name LIKE '%${name}%' `;
-      if (email) query += `AND email LIKE '%${email}%' `;
-      if (isAdmin) query += `AND isAdmin='${isAdmin}'`;
-    }
-
     try {
-      const users = await User.search(query);
+      const users = await User.search({ id, name, email, isAdmin });
       return res.status(200).json(users);
     } catch (error) {
       return res.status(400).json({ message: error, error: true });
