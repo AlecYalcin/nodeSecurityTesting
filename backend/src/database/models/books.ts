@@ -84,20 +84,32 @@ class Book {
   static create = async (book: BookAttribute): Promise<BookAttribute> => {
     // Adicionando a base de dados
     return new Promise((resolve, reject) => {
-      const query = `INSERT INTO books (title, author, description, price, stock, img) VALUES ('${
-        book.title
-      }','${book.author}','${book.description || ""}','${book.price}','${
-        book.stock
-      }','${book.img}')`;
+      // Query Inicial
+      const query =
+        "INSERT INTO books (title, author, description, price, stock, img) VALUES (?, ?, ?, ?, ?, ?)";
 
-      connection.query<ResultSetHeader>(query, function (error, results) {
-        if (error) {
-          reject(error);
-        } else {
-          book.id = results.insertId;
-          resolve(book);
+      // Valores da Query
+      const values: any[] = [
+        book.title,
+        book.author,
+        book.description || "",
+        book.price,
+        book.stock,
+        book.img,
+      ];
+
+      connection.query<ResultSetHeader>(
+        query,
+        values,
+        function (error, results) {
+          if (error) {
+            reject(error);
+          } else {
+            book.id = results.insertId;
+            resolve(book);
+          }
         }
-      });
+      );
     });
   };
 
