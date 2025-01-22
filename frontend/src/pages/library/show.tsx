@@ -32,10 +32,10 @@ const PageBookShow = () => {
       if (data.isAdmin === 1) setIsAdmin(true);
     };
 
-    fetchUser();
+    if (Number(user_id) !== 0) fetchUser();
 
     fetchBook();
-  }, [id]);
+  }, [id, user_id]);
 
   if (loading) return <h1 className="text-center">Carregando...</h1>;
 

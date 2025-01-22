@@ -5,7 +5,6 @@ export const searchBooks = async (query: string) => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}}`,
     },
   });
 
@@ -32,7 +31,6 @@ export const listBooks = async ({
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}}`,
     },
   });
 
@@ -45,7 +43,6 @@ export const retrieveBook = async (id: number) => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}}`,
     },
   });
 

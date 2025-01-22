@@ -42,8 +42,8 @@ const Navbar = () => {
       }
     };
 
-    fetchUser();
-  }, [token, id]);
+    if (Number(user.id) !== 0) fetchUser();
+  }, [token, id, user.id]);
 
   return (
     <div>
