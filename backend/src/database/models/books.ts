@@ -17,6 +17,7 @@ export interface WhereBook {
   author?: string;
   greaterThan?: number;
   lowerThan?: number;
+  price?: number;
   stock?: number;
 }
 
@@ -116,25 +117,41 @@ class Book {
   static retrieve = async (where: WhereBook): Promise<RowDataPacket> => {
     // Procurando na Base de Dados
     return new Promise((resolve, reject) => {
-      let query = `SELECT id, title, author, description, price, stock FROM books WHERE 1=1 `;
+      let query = `SELECT id, title, author, description, price, stock FROM books`;
 
+      // Condições da Query
+      const conditions: string[] = [];
+
+      // Valores da Query
+      const values: any[] = [];
+
+      // Descobrindo se há parâmetros de busca
       if (where && typeof where === "object") {
+        // Adicionando os paarâmetros de busca e valores
         for (const [key, value] of Object.entries(where)) {
-          query += `AND ${key}='${value}' `;
+          conditions.push(`${key} = ?`);
+          values.push(value);
         }
       } else {
         reject("Parâmetros não existentes.");
       }
 
-      connection.query<RowDataPacket[]>(query, function (error, instance) {
-        if (error) {
-          reject(error);
-        } else if (instance.length == 0) {
-          reject("Livro não encontrado.");
-        } else {
-          resolve(instance[0]);
+      // Adicionando condições e valores na query
+      if (conditions.length > 0) query += " WHERE " + conditions.join(" AND ");
+
+      connection.query<RowDataPacket[]>(
+        query,
+        values,
+        function (error, instance) {
+          if (error) {
+            reject(error);
+          } else if (instance.length == 0) {
+            reject("Livro não encontrado.");
+          } else {
+            resolve(instance[0]);
+          }
         }
-      });
+      );
     });
   };
 
@@ -147,23 +164,31 @@ class Book {
       // Criando de atualização
       let query = "UPDATE books SET ";
 
-      // Adicionando parâmetros para atualizar
+      // Condições da Query
+      const conditions: string[] = [];
+
+      // Valores da Query
+      const values: any[] = [];
+
+      // Descobrindo se há parâmetros de busca
       if (updates && typeof updates === "object") {
-        const keys = Object.keys(updates);
-        for (let i = 0; i < keys.length; i++) {
-          if (i == keys.length - 1)
-            query += `${keys[i]} = "${updates[keys[i]]}"`;
-          else query += `${keys[i]} = "${updates[keys[i]]}", `;
+        // Adicionando os paarâmetros de busca e valores
+        for (const [key, value] of Object.entries(updates)) {
+          conditions.push(`${key} = ?`);
+          values.push(value);
         }
       } else {
-        reject("Parâmetros não colocados.");
+        reject("Parâmetros não existentes.");
       }
+
+      // Adicionando condições e valores na query
+      if (conditions.length > 0) query += conditions.join(", ");
 
       // Finalizando query com id
       query += ` WHERE id=${id};`;
 
       // Executando Query
-      connection.query(query, function (error) {
+      connection.query(query, values, function (error) {
         if (error) {
           reject(error);
         } else {
