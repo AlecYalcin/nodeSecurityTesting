@@ -15,10 +15,11 @@ export interface WhereBook {
   id?: number;
   title?: string;
   author?: string;
-  greaterThan?: number;
-  lowerThan?: number;
+  greater?: number;
+  lower?: number;
   price?: number;
   stock?: number;
+  recent?: number;
 }
 
 class Book {
@@ -216,15 +217,52 @@ class Book {
     });
   };
 
-  static search = async (query: string): Promise<Array<RowDataPacket>> => {
+  static search = async (params: WhereBook): Promise<Array<RowDataPacket>> => {
+    // Query de Busca
+    let query = "SELECT id, title, author, price, stock FROM books";
+
+    // Condições da Query
+    const conditions: string[] = [];
+
+    // Valores da Query
+    const values: any[] = [];
+
+    if (params.id) {
+      conditions.push("id = ?");
+      values.push(params.id);
+    }
+
+    if (params.title) {
+      conditions.push("title LIKE ?");
+      values.push(`%${params.title}%`);
+    }
+
+    if (params.author) {
+      conditions.push("author LIKE ?");
+      values.push(`%${params.author}%`);
+    }
+
+    // Adicionando condições e valores na query
+    if (conditions.length > 0) query += " WHERE " + conditions.join(" AND ");
+
+    // Adicionando ordeççaão na query
+    if (params.greater) query += " ORDER BY price DESC";
+    else if (params.lower) query += " ORDER BY price ASC";
+    else if (params.stock) query += " ORDER BY stock ASC";
+    else if (params.recent) query += " ORDER BY createdAt DESC, id DESC";
+
     return new Promise((resolve, reject) => {
-      connection.query<RowDataPacket[]>(query, function (error, instances) {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(instances);
+      connection.query<RowDataPacket[]>(
+        query,
+        values,
+        function (error, instances) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(instances);
+          }
         }
-      });
+      );
     });
   };
 }

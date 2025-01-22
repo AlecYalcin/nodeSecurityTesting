@@ -47,25 +47,16 @@ class BookController {
     // Parâmetros de Busca
     const { id, title, author, greater, lower, stock, recent } = req.query;
 
-    // Query de Busca
-    let query = "SELECT id, title, author, price, stock FROM books WHERE 1=1 ";
-
-    // Alterando QUERY com Where
-    if (id || title || author || greater || lower || stock || recent) {
-      // Adicionando Parâmetros
-      if (id) query += `AND id=${id} `;
-      if (title) query += `AND title LIKE '%${title}%' `;
-      if (author) query += `AND author LIKE '%${author}%' `;
-      if (greater) query += `AND price >='${greater}' `;
-      if (stock) query += `ORDER BY stock ASC `;
-      if (lower) query += `ORDER BY price ASC `;
-      if (recent) query += `ORDER BY createdAt DESC`;
-    }
-
-    console.log(query);
-
     try {
-      const books = await Book.search(query);
+      const books = await Book.search({
+        id,
+        title,
+        author,
+        greater,
+        lower,
+        stock,
+        recent,
+      });
       return res.status(200).json(books);
     } catch (error) {
       return res.status(404).json({ message: error, error: true });
