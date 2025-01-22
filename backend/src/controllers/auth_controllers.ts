@@ -14,15 +14,12 @@ class AuthController {
   login = async (req: any, res: any) => {
     const { email, password } = req.body;
 
-    console.log(email, password);
     // Verificando existência de usuaŕio
     try {
       const user = await User.retrieve({
         email,
         password,
       });
-
-      console.log(user);
 
       if (typeof user.isAdmin === "string" && user.isAdmin == "true") {
         user.isAdmin = true;
@@ -44,7 +41,7 @@ class AuthController {
         }
       );
 
-      console.log(user);
+      console.log(token);
 
       res.cookie("token", token, {
         httpOnly: true,
@@ -52,8 +49,6 @@ class AuthController {
         sameSite: "None",
         maxAge: 1000 * 60 * 60 * 24 * 2,
       });
-
-      console.log(user);
 
       return res.status(200).json({ message: "Autenticado.", id: user.id });
     } catch (error) {

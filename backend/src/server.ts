@@ -29,9 +29,21 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Configuração de Headers
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:4000",
+    credentials: true,
+  })
+);
 
-app.options("*", cors());
+// Para as rotas de opção
+app.options(
+  "*",
+  cors({
+    origin: "http://localhost:4000",
+    credentials: true,
+  })
+);
 
 // Rotas de Usuários
 app.use("/users", userRoutes);
