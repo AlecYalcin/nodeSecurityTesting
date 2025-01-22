@@ -59,6 +59,7 @@ export const updateBook = async (book: {
 }) => {
   const response = await fetch(`${API_URL}/books/${book.id}`, {
     method: "PATCH",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -79,6 +80,7 @@ export const createBook = async (book: {
 }) => {
   const response = await fetch(`${API_URL}/books`, {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -95,6 +97,7 @@ export const buyBook = async (book_id: number, quantity: number) => {
 
   const response = await fetch(`${API_URL}/payments/create`, {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,

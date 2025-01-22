@@ -17,9 +17,8 @@ const PageLogin = () => {
       const data = await login(email, password);
 
       // Verificando se a conexão obteve sucesso
-      if (data.token) {
+      if (data.id) {
         // Adicionando Token ao Localstorage
-        localStorage.setItem("token", data.token);
         localStorage.setItem("id", data.id);
 
         // Redirecionar o Usuário Autenticado

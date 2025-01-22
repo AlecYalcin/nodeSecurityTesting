@@ -21,7 +21,7 @@ const Navbar = () => {
   };
 
   // Pegando Token e Id
-  const { token, id } = getStorage();
+  const { id } = getStorage();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -42,9 +42,8 @@ const Navbar = () => {
       }
     };
 
-    if (Number(user.id) !== 0) fetchUser();
-  }, [token, id, user.id]);
-
+    fetchUser();
+  }, [id]);
   return (
     <div>
       <div

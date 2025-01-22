@@ -16,6 +16,7 @@ export const paymentsList = async (
 
   const response = await fetch(querySearch, {
     method: "GET",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -33,6 +34,7 @@ export const paymentTransfer = async (
 ) => {
   const response = await fetch(`${API_URL}/payments/transfer`, {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("token")}`,

@@ -1,12 +1,13 @@
+import Cookies from "js-cookie";
+
 export const API_URL = "http://localhost:3000";
 
-export const setStorage = (token: string, id: string) => {
-  localStorage.setItem("token", token);
+export const setStorage = (id: string) => {
   localStorage.setItem("id", id);
 };
 
 export const getStorage = () => {
-  const token = localStorage.getItem("token");
+  const token = Cookies.get("token");
   const id = localStorage.getItem("id");
 
   return { token, id };
