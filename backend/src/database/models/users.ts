@@ -81,20 +81,32 @@ class User {
   static create = async (user: UserAttribute): Promise<UserAttribute> => {
     // Adicionando a base de dados
     return new Promise((resolve, reject) => {
-      const query = `INSERT INTO users (name, email, password, isAdmin, bank) VALUES ('${
-        user.name
-      }','${user.email}','${user.password}','${user.isAdmin ? 1 : 0 || 0}','${
-        user.bank || 0
-      }')`;
+      // Query Inicial
+      const query =
+        "INSERT INTO users (name, email, password, isAdmin, bank) VALUES (?, ?, ?, ?, ?)";
 
-      connection.query<ResultSetHeader>(query, function (error, results) {
-        if (error) {
-          reject(error);
-        } else {
-          user.id = results.insertId;
-          resolve(user);
+      // Valores da Query
+      const values: any[] = [
+        user.name,
+        user.email,
+        user.password,
+        user.isAdmin ? 1 : 0 || 0,
+        user.bank || 0,
+      ];
+
+      // Realizando Query
+      connection.query<ResultSetHeader>(
+        query,
+        values,
+        function (error, results) {
+          if (error) {
+            reject(error);
+          } else {
+            user.id = results.insertId;
+            resolve(user);
+          }
         }
-      });
+      );
     });
   };
 
@@ -124,7 +136,7 @@ class User {
       // Adicionando condições e valores na query
       if (conditions.length > 0) query += " WHERE " + conditions.join(" AND ");
 
-      // Realizando Query Segura
+      // Realizando Query
       connection.query<RowDataPacket[]>(
         query,
         values,
