@@ -82,16 +82,30 @@ class Payment {
   ): Promise<PaymentAttribute> => {
     // Adicionando a base de dados
     return new Promise((resolve, reject) => {
-      const query = `INSERT INTO payments (book_id, user_id, total_price, quantity) VALUES ('${payment.book_id}','${payment.user_id}','${payment.total_price}','${payment.quantity}')`;
+      // Query Inicial
+      const query =
+        "INSERT INTO payments (book_id, user_id, total_price, quantity) VALUES (?, ?, ?, ?)";
 
-      connection.query<ResultSetHeader>(query, function (error, results) {
-        if (error) {
-          reject(error);
-        } else {
-          payment.id = results.insertId;
-          resolve(payment);
+      // Valores da Query
+      const values: any[] = [
+        payment.book_id,
+        payment.user_id,
+        payment.total_price,
+        payment.quantity,
+      ];
+
+      connection.query<ResultSetHeader>(
+        query,
+        values,
+        function (error, results) {
+          if (error) {
+            reject(error);
+          } else {
+            payment.id = results.insertId;
+            resolve(payment);
+          }
         }
-      });
+      );
     });
   };
 
