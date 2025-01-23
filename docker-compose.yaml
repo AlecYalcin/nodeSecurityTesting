@@ -20,6 +20,8 @@ services:
       context: ./backend
     volumes:
       - ./backend:/app
+      - /app/node_modules
+      - /app/dist
     ports:
       - "3000:3000"
     depends_on:
@@ -31,6 +33,8 @@ services:
       context: ./frontend
     volumes:
       - ./frontend:/app
+      - /app/node_modules
+      - /app/dist
     ports:
       - "4000:4000"
     depends_on:
