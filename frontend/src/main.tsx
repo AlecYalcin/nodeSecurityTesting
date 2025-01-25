@@ -8,6 +8,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 // Pages
+import PageLibrarySearch from "./pages/library/search"; 
 import App from "./pages/business/app";
 import PageLogin from "./pages/auth/login";
 import Register from "./pages/auth/register";
@@ -21,7 +22,23 @@ import PageProfileHistory from "./pages/profile/history";
 import PagePaymentSearch from "./pages/business/search";
 import PagePaymentTransfer from "./pages/business/transfer";
 import Layout from "./pages/main-layout";
-import PageLibrarySearch from "./pages/library/search";
+import { getFromCache, setToCache } from "../utils/cache";
+
+const AppWithCache = () => {
+  const cachedData = getFromCache("homeData");
+
+  if (cachedData) {
+    return <App initialData={cachedData} />;
+  }
+
+  return (
+    <App
+      onFetchData={(fetchedData: any) => {
+        setToCache("homeData", fetchedData, 300);
+      }}
+    />
+  );
+};
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -32,7 +49,7 @@ createRoot(document.getElementById("root")!).render(
           path="/"
           element={
             <Layout>
-              <App />
+              <AppWithCache />
             </Layout>
           }
         />

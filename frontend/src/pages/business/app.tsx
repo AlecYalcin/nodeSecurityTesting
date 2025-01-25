@@ -1,65 +1,106 @@
 import { useEffect, useState } from "react";
 import BookList from "../../components/book-list";
 import { listBooks } from "../../api/books";
+import { getFromCache, setToCache } from "../../../utils/cache";
 
-const App = () => {
-  const [recent, setRecent] = useState([]);
-  const [price, setPrice] = useState([]);
-  const [stock, setStock] = useState([]);
+interface AppProps {
+  initialData?: any;
+  onFetchData?: (fetchedData: any) => void;
+}
+
+interface bookInterface {
+  id: number;
+  title: string;
+  author: string;
+  price: number;
+  stock: number;
+}
+
+const App: React.FC<AppProps> = ({ onFetchData }) => {
+  const [recent, setRecent] = useState<bookInterface[]>([]);
+  const [price, setPrice] = useState<bookInterface[]>([]);
+  const [stock, setStock] = useState<bookInterface[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchRecent = async () => {
-      try {
-        const data = await listBooks({
-          recent: true,
-          price: false,
-          stock: false,
-        });
+      const cacheKey = "recentBooks";
+      const cachedData = getFromCache(cacheKey);
 
-        if (data.error) {
-          alert(data.message);
-        } else {
-          setRecent(data);
+      if (cachedData) {
+        setRecent(cachedData);
+      } else {
+        try {
+          const data = await listBooks({
+            recent: true,
+            price: false,
+            stock: false,
+          });
+
+          if (data.error) {
+            alert(data.message);
+          } else {
+            setRecent(data);
+            setToCache(cacheKey, data, 3600);
+            if (onFetchData) onFetchData(data); // callnack fornecido
+          }
+        } catch (error) {
+          alert(error);
         }
-      } catch (error) {
-        alert(error);
       }
     };
 
     const fetchPrice = async () => {
-      try {
-        const data = await listBooks({
-          recent: false,
-          price: true,
-          stock: false,
-        });
+      const cacheKey = "priceBooks";
+      const cachedData = getFromCache(cacheKey);
 
-        if (data.error) {
-          alert(data.message);
-        } else {
-          setPrice(data);
+      if (cachedData) {
+        setPrice(cachedData);
+      } else {
+        try {
+          const data = await listBooks({
+            recent: false,
+            price: true,
+            stock: false,
+          });
+
+          if (data.error) {
+            alert(data.message);
+          } else {
+            setPrice(data);
+            setToCache(cacheKey, data, 3600);
+            if (onFetchData) onFetchData(data); // callnack fornecido
+          }
+        } catch (error) {
+          alert(error);
         }
-      } catch (error) {
-        alert(error);
       }
     };
 
     const fetchStock = async () => {
-      try {
-        const data = await listBooks({
-          recent: false,
-          price: false,
-          stock: true,
-        });
+      const cacheKey = "stockBooks";
+      const cachedData = getFromCache(cacheKey);
 
-        if (data.error) {
-          alert(data.message);
-        } else {
-          setStock(data);
+      if (cachedData) {
+        setStock(cachedData);
+      } else {
+        try {
+          const data = await listBooks({
+            recent: false,
+            price: false,
+            stock: true,
+          });
+
+          if (data.error) {
+            alert(data.message);
+          } else {
+            setStock(data);
+            setToCache(cacheKey, data, 3600);
+            if (onFetchData) onFetchData(data); // callnack fornecido
+          }
+        } catch (error) {
+          alert(error);
         }
-      } catch (error) {
-        alert(error);
       }
     };
 
@@ -67,18 +108,16 @@ const App = () => {
       await fetchRecent();
       await fetchPrice();
       await fetchStock();
-
       setLoading(false);
     };
 
     fetchAll();
-  }, []);
+  }, [onFetchData]); 
 
   if (loading) return <h1 className="text-center">Carregando...</h1>;
 
   return (
     <div className="bg-body-tertiary">
-      {/* Main Page */}
       <div>
         <div className="container shadow text-center bg-body p-2 mt-3 mb-5">
           <BookList id="new" title="Novos lançamentos!" books={recent} />
