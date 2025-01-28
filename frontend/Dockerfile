@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Exponha a porta usada pelo frontend
-EXPOSE 3000
+EXPOSE 4000
 
 # Build
 RUN npm run build

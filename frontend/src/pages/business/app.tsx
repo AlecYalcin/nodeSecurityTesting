@@ -4,8 +4,8 @@ import { listBooks } from "../../api/books";
 import { getFromCache, setToCache } from "../../../utils/cache";
 
 interface AppProps {
-  initialData?: any;
-  onFetchData?: (fetchedData: any) => void;
+  initialData?: unknown;
+  onFetchData?: (fetchedData: unknown) => void;
 }
 
 interface bookInterface {
@@ -28,7 +28,7 @@ const App: React.FC<AppProps> = ({ onFetchData }) => {
       const cachedData = getFromCache(cacheKey);
 
       if (cachedData) {
-        setRecent(cachedData);
+        setRecent(cachedData.value);
       } else {
         try {
           const data = await listBooks({
@@ -55,7 +55,7 @@ const App: React.FC<AppProps> = ({ onFetchData }) => {
       const cachedData = getFromCache(cacheKey);
 
       if (cachedData) {
-        setPrice(cachedData);
+        setPrice(cachedData.value);
       } else {
         try {
           const data = await listBooks({
@@ -82,7 +82,7 @@ const App: React.FC<AppProps> = ({ onFetchData }) => {
       const cachedData = getFromCache(cacheKey);
 
       if (cachedData) {
-        setStock(cachedData);
+        setStock(cachedData.value);
       } else {
         try {
           const data = await listBooks({
@@ -112,7 +112,7 @@ const App: React.FC<AppProps> = ({ onFetchData }) => {
     };
 
     fetchAll();
-  }, [onFetchData]); 
+  }, [onFetchData]);
 
   if (loading) return <h1 className="text-center">Carregando...</h1>;
 
